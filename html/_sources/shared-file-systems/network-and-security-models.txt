@@ -1,0 +1,18 @@
+.. _shared_fs_network&security_models:
+
+===========================
+Network and security models
+===========================
+TBD.
+
+Flat vs segmented networking
+----------------------------
+TBD.
+
+Single-svm vs multi-svm back ends
+---------------------------------
+TBD.
+
+Network plug-ins
+----------------
+TBD.

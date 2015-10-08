@@ -1,0 +1,6 @@
+.. _shared_fs_case_studies:
+
+============
+Case studies
+============
+TBD.
