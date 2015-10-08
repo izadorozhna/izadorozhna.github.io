@@ -1,0 +1,55 @@
+.. _shared_fs_intro:
+
+Introduction
+------------
+The Shared File Systems Storage service (manila) is intended to be ran on a
+single-node or across multiple nodes. The Shared File Systems service consists
+of three main services, which are similar to those of the Block Storage
+service:
+
+- ``manila-api``
+- ``manila-scheduler``
+- ``manila-share``
+
+The Shared File Systems Storage service uses a sql-based central database that
+is shared by all Shared File Systems services in the system. The amount and
+depth of the data fits into a sql database quite well. For small deployments
+this seems like an optimal solution. For larger deployments, and especially if
+security is a concern, The Shared File Systems service will be moving towards
+multiple data stores with some kind of aggregation system.
+
+Below is an explanation of the different components.
+
+.. image:: ../figures/manila-intro.png
+
+.. glossary::
+
+    DB
+        SQL database for data storage.
+
+    Web dashboard
+        External component that talks to the api.
+
+    ``manila-api``
+        The service that provides a stable RESTful API. The service
+        authenticates and routes requests throughout the Shared Filesystem
+        service. There is python-manilaclient to interact with the API.
+
+    Python-manilaclient
+        Command line interface to interact with the Shared File Systems Storage
+        service via ``manila-api`` and also a Python module to interact
+        programmatically with Manila.
+
+    Auth Manager
+        The component responsible for users/projects/and roles. Can backend to
+        DB or LDAP. This is not a separate binary, but rather a python class
+        that is used by most components in the system.
+
+    ``manila-scheduler``
+        Responsible for scheduling/routing requests to the appropriate
+        ``manila-share`` service. It does that by picking one back-end while
+        filtering all except one back-end.
+
+    ``manila-share``
+        Responsible for managing Shared File Service devices, specifically the
+        back-end devices.

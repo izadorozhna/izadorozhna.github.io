@@ -1,0 +1,30 @@
+===================
+Shared File Systems
+===================
+
+The Shared File Systems Storage service provides a set of services for
+management of shared file systems in a multi-tenant cloud environment, similar
+to how OpenStack provides for block-based storage management through the
+OpenStack Block Storage service project. With the Shared File Systems service,
+you can create a remote file system, mount the file system on your instances,
+and then read and write data from your instances to and from your file system.
+
+A large amount of existing software is designed around file-based storage. The
+Shared File Systems service provides the management of file shares for example,
+NFS and CIFS as a core service to OpenStack and currently works with NetApp,
+Red Hat storage (GlusterFS) and EMC VNX, as well as on a base Linux NFS or
+Samba server.
+
+The Shared File Systems Storage serves the same purpose as the Amazon
+Elastic File System (EFS) offering does.
+
+.. toctree::
+   :maxdepth: 2
+
+   shared-file-systems/intro.rst
+   shared-file-systems/network-and-security-models.rst
+   shared-file-systems/security-services.rst
+   shared-file-systems/share-and-share-type-acl.rst
+   shared-file-systems/policies.rst
+   shared-file-systems/checklist.rst
+   shared-file-systems/case-studies.rst

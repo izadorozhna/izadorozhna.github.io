@@ -1,0 +1,14 @@
+.. _shared_fs_share_and_share_type_acl:
+
+===================================
+Share and share type access control
+===================================
+TBD.
+
+Share access control
+--------------------
+TBD.
+
+Share type access control
+-------------------------
+TBD.
