@@ -3,7 +3,7 @@
 ========
 Policies
 ========
-Shared File Systems Storage service as wel as other OpenStack services has its
+Shared File Systems Storage service as well as other OpenStack services has its
 own role-based access policies. They determine which user can access which
 objects in which way, and are defined in the service's
 :file:`/etc/manila/policy.json` file.

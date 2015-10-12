@@ -13,6 +13,8 @@ Single-svm vs multi-svm back ends
 ---------------------------------
 TBD.
 
+.. _shared_fs_network_plugins:
+
 Network plug-ins
 ----------------
 TBD.

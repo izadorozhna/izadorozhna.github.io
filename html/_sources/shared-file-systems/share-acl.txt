@@ -1,9 +1,9 @@
-.. _shared_fs_share_and_share_type_acl:
+.. _shared_fs_share_acl:
 
-===================================
-Share and share type access control
-===================================
-The Shared File Systems Storage Service allows to grant or deny access to
+====================
+Share access control
+====================
+The Shared File Systems Storage service allows to grant or deny access to
 different entities of the service for other clients.
 
 Having a share as remote mountable instance of a file system, you can manage
@@ -13,15 +13,6 @@ The shares can be created as public and private. This is the level of
 visibility for the share that defines whether other tenants can or cannot see
 the share.
 
-The share types helping to filter or choose back ends before you or other users
-create a share can also be private or public. Thus you can limit clients that
-can choose definite back end. As an administrator, you can grant access to the
-private share types for some certain keystone tenants.
-
-.. _shared_fs_share_acl:
-
-Share access control
---------------------
 The share can be *public* and *private*. This is a level of visibility for the
 share that defines whether other tenants can or cannot see the share. By
 default, the shares are created as private. While creating a share, use a key
@@ -48,9 +39,9 @@ config for the certain export protocol. For example, for the NFS protocol there
 is ``exportfs`` command or ``/etc/exports`` file on the storage which controls
 each remote share and the hosts that can access it. It is empty if nobody can
 mount a share. For the remote CIFS server there is ``net conf list`` command
-which shows the configuration. The parameter ``hosts deny`` is should be set by
-share driver to ``0.0.0.0/0`` which means that that hosts are denied to mount
-the share.
+which shows the configuration. The parameter ``hosts deny`` should be set by
+the share driver to ``0.0.0.0/0`` which means that that hosts are denied to
+mount the share.
 
 Using the Shared File Systems service, you can grant or deny access to a share
 by specifying one of these supported share access levels:
@@ -58,6 +49,12 @@ by specifying one of these supported share access levels:
 - **rw**. Read and write (RW) access. This is the default value.
 
 - **ro**. Read-only (RO) access.
+
+.. tip::
+    The RO access level can be helpful in the public shares when the
+    administrator gives read and write (RW) access for some certain editors or
+    contributors and gives read-only (RO) access for the rest of users
+    (viewers).
 
 You must also specify one of these supported authentication methods:
 
@@ -75,7 +72,7 @@ You must also specify one of these supported authentication methods:
 .. note::
     The supported authentication methods depend on which share driver, security
     service (LDAP, Kerberos protocols, or Active Directory service) you
-    configure and use and which shared file system protocol (NFS, CIFS,
+    configure and use, and which shared file system protocol (NFS, CIFS,
     GlusterFS, or HDFS) you use. For details of supporting of
     features by different drivers, see `Manila share features support mapping
     <http://docs.openstack.org/developer/manila/devref/share_back_ends_feature_
@@ -158,12 +155,5 @@ Shared File Systems service CLI.
 
 .. tip::
     To ensure that the granted or denied access with Shared File Systems
-    service CLI is correct check the mount config file on the storage before
+    service CLI is correct, check the mount config file on the storage before
     releasing a share to the production.
-
-.. _shared_fs_share_types_acl:
-
-Share type access control
--------------------------
-
-TBD.

@@ -3,7 +3,7 @@
   <head>
     <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
 
-    <title>OpenStack Docs: Front-end caching and session back end</title>
+    <title>OpenStack Docs: Share type access control</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -136,14 +136,14 @@
         <div class="col-lg-9 col-md-8 col-sm-8 col-lg-push-3 col-md-push-4 col-sm-push-4">
 <div class="row">
   <div class="col-lg-8">
-    <h2>Front-end caching and session back end</h2>
+    <h2>Share type access control</h2>
   </div>
   <div class="docs-actions">
     
-    <a href="https-hsts-xss-ssrf.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: HTTPS, HSTS, XSS, and SSRF"></i></a>
+    <a href="share-acl.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Share access control"></i></a>
     
     
-    <a href="static-media.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Static media"></i></a>
+    <a href="policies.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Policies"></i></a>
     
     <a id="logABugLink1" href="" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
   </div>
@@ -156,49 +156,90 @@
               <div class="docs-top-contents">
                 <h5>Contents</h5>
                 <ul>
-<li><a class="reference internal" href="#">Front-end caching and session back end</a><ul>
-<li><a class="reference internal" href="#front-end-caching">Front-end caching</a></li>
-<li><a class="reference internal" href="#session-back-end">Session back end</a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#">Share type access control</a></li>
 </ul>
 
               </div>
               <div class="docs-body">
 
-  <div class="section" id="front-end-caching-and-session-back-end">
-<h1>Front-end caching and session back end<a class="headerlink" href="#front-end-caching-and-session-back-end" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="front-end-caching">
-<h2>Front-end caching<a class="headerlink" href="#front-end-caching" title="Permalink to this headline">¶</a></h2>
-<p>We do not recommend using front-end caching tools with the
-dashboard. The dashboard is rendering dynamic content resulting
-directly from OpenStack API requests and front-end caching layers
-such as varnish can prevent the correct content from being
-displayed. In Django, static media is directly served from Apache
-or nginx and already benefits from web host caching.</p>
+  <div class="section" id="share-type-access-control">
+<span id="shared-fs-share-types-acl"></span><h1>Share type access control<a class="headerlink" href="#share-type-access-control" title="Permalink to this headline">¶</a></h1>
+<p>A share type is an administrator-defined &#8220;type of service&#8221;, comprised of a
+tenant visible description, and a list of non-tenant-visible key/value pairs
+(extra specifications) which the manila-scheduler uses to make scheduling
+decisions, and drivers control the share creation.</p>
+<p>The administrators cat create and delete share types, and manage the extra
+specifications that give them meaning inside the Shared File Systems Storage
+service. Tenants can list the share types and can use them to create new
+shares. For details of managing the share types, see <a class="reference external" href="http://developer.openstack.org/api-ref-share-v2.html#share-type">Shared File Systems API</a>
+documentation.</p>
+<p>The shares types can be created as <em>public</em> and <em>private</em>. This is the level of
+visibility for the share type that defines whether other tenants can or cannot
+see it in a share types list and use it to create a new share.</p>
+<p>By default, the share types are created as public. While creating a share type,
+use <tt class="docutils literal"><span class="pre">--is_public</span></tt> parameter set to <tt class="docutils literal"><span class="pre">False</span></tt> to make your share type private
+for other tenants not to see it in a list of share types and create new share
+with it.</p>
+<p>The <em>public</em> share types are available to every keystone tenant in a cloud.</p>
+<p>The Shared File Systems Storage service allows the administrators to grant or
+deny access to the <em>private</em> share types for some certain keystone tenants.
+You also can get information about access for a specified private share type.</p>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">Since the share types due to their extra specifications help to filter or
+choose back ends before users create a share, using access to the share
+types you can limit clients that can choose definite back end.</p>
 </div>
-<div class="section" id="session-back-end">
-<h2>Session back end<a class="headerlink" href="#session-back-end" title="Permalink to this headline">¶</a></h2>
-<p>The default session back end for horizon
-(<tt class="docutils literal"><span class="pre">django.contrib.sessions.backends.signed_cookies</span></tt>)
-saves user data in signed, but unencrypted cookies stored in the
-browser. Due to the fact that each dashboard instance is
-stateless, the previously mentioned methodology provides the
-ability to implement the most simple session back-end scaling.</p>
-<p>It should be noted that with this type of implementation
-sensitive access tokens will be stored in the browser and will be
-transmitted with each request made. The back end ensures the
-integrity of session data, even though the transmitted data
-is only encrypted by HTTPS.</p>
-<p>If your architecture allows it, we recommend using
-<tt class="docutils literal"><span class="pre">django.contrib.sessions.backends.cache</span></tt> as
-your session back end with memcache as the cache. Memcache must
-not be exposed publicly, and should communicate over a secured
-private channel. If you choose to use the signed cookies
-back end, refer to the Django documentation to understand the
-security trade-offs.</p>
-<p>For further details, see the
-<a class="reference external" href="https://docs.djangoproject.com/">Django documentation</a>.</p>
+<p>As an example, being an administrator in admin tenant, you can create a private
+share type and see it in the list:</p>
+<div class="code console highlight-python"><div class="highlight"><pre>$ source openrc admin admin
+$ manila type-list --all
++----+--------+-----------+-----------+-----------------------------------+-----------------------+
+| ID | Name   | Visibility| is_default| required_extra_specs              | optional_extra_specs  |
++----+--------+-----------+-----------+-----------------------------------+-----------------------+
+| 4..| my_type| private   | -         | driver_handles_share_servers:False| snapshot_support:True |
+| 5..| default| public    | YES       | driver_handles_share_servers:True | snapshot_support:True |
++----+--------+-----------+-----------+-----------------------------------+-----------------------+
+</pre></div>
+</div>
+<p>The demo user in demo tenant can list the types and the private share type
+named <tt class="docutils literal"><span class="pre">my_type</span></tt> is not visible for him.</p>
+<div class="code console highlight-python"><div class="highlight"><pre>$ source openrc demo demo
+$ manila type-list --all
++----+--------+-----------+-----------+----------------------------------+----------------------+
+| ID | Name   | Visibility| is_default| required_extra_specs             | optional_extra_specs |
++----+--------+-----------+-----------+----------------------------------+----------------------+
+| 5..| default| public    | YES       | driver_handles_share_servers:True| snapshot_support:True|
++----+--------+-----------+-----------+----------------------------------+----------------------+
+</pre></div>
+</div>
+<p>The administrator cat grant the access to the private share type for the demo
+tenant with the tenant ID equal to df29a37db5ae48d19b349fe947fada46:</p>
+<div class="code console highlight-python"><div class="highlight"><pre>$ source openrc admin admin
+$ manila type-access-add my_type df29a37db5ae48d19b349fe947fada46
+</pre></div>
+</div>
+<p>Thus now the users in demo tenant can see the private share type and use it in
+the share creation:</p>
+<div class="code console highlight-python"><div class="highlight"><pre>$ source openrc demo demo
+$ manila type-list --all
++----+--------+-----------+-----------+-----------------------------------+-----------------------+
+| ID | Name   | Visibility| is_default| required_extra_specs              | optional_extra_specs  |
++----+--------+-----------+-----------+-----------------------------------+-----------------------+
+| 4..| my_type| private   | -         | driver_handles_share_servers:False| snapshot_support:True |
+| 5..| default| public    | YES       | driver_handles_share_servers:True | snapshot_support:True |
++----+--------+-----------+-----------+-----------------------------------+-----------------------+
+</pre></div>
+</div>
+<p>To deny access for a specified project, use
+<strong>manila type-access-remove &lt;share_type&gt; &lt;project_id&gt;</strong> command.</p>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">A <strong>real production use case</strong> that shows the purpose of a share types and
+access to them is a situation when you have two back ends: LVM as a public
+free storage and Ceph as a private billable storage. In this case you can
+grant access to the certain tenants and make the access with <tt class="docutils literal"><span class="pre">user/group</span></tt>
+authentication method.</p>
 </div>
 </div>
 
@@ -208,10 +249,10 @@ security trade-offs.</p>
           </div>
           <div class="docs-actions">
           
-            <a href="https-hsts-xss-ssrf.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: HTTPS, HSTS, XSS, and SSRF"></i></a>
+            <a href="share-acl.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Share access control"></i></a>
           
           
-            <a href="static-media.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Static media"></i></a>
+            <a href="policies.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Policies"></i></a>
           
             <a id="logABugLink3" href="" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
           </div>
@@ -276,21 +317,20 @@ security trade-offs.</p>
 <li class="toctree-l1"><a class="reference internal" href="../secure-communication.html">Secure communication</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api-endpoints.html">API endpoints</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../identity.html">Identity</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../dashboard.html">Dashboard</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="domains-dashboard-upgrades-basic-web-server-configuration.html">Domain names, dashboard upgrades, and basic web server configuration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="https-hsts-xss-ssrf.html">HTTPS, HSTS, XSS, and SSRF</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="">Front-end caching and session back end</a></li>
-<li class="toctree-l2"><a class="reference internal" href="static-media.html">Static media</a></li>
-<li class="toctree-l2"><a class="reference internal" href="secret-key.html">Secret key</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cookies.html">Cookies</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cross-origin-resource-sharing-cors.html">Cross Origin Resource Sharing (CORS)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="debug.html">Debug</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dashboard.html">Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compute.html">Compute</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../block-storage.html">Block Storage</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../shared-file-systems.html">Shared File Systems</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="network-and-security-models.html">Network and security models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="security-services.html">Security services</a></li>
+<li class="toctree-l2"><a class="reference internal" href="share-acl.html">Share access control</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Share type access control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="policies.html">Policies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checklist.html">Checklist</a></li>
 <li class="toctree-l2"><a class="reference internal" href="case-studies.html">Case studies</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../compute.html">Compute</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../block-storage.html">Block Storage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../shared-file-systems.html">Shared File Systems</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../networking.html">Networking</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../object-storage.html">Object Storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messaging.html">Message queuing</a></li>
@@ -401,7 +441,7 @@ security trade-offs.</p>
 
         /* "pagename" is the path to the source file, relative to conf.py's
            directory. However, "pagename" is missing the rst extension. */
-        var sourceFile = "dashboard/front-end-caching-session-back-end" + ".rst"
+        var sourceFile = "shared-file-systems/share-type-acl" + ".rst"
 
         /* Using the current working directory, figure out
            in which book we are and use that information to
@@ -412,7 +452,7 @@ security trade-offs.</p>
 
     /* gitsha, project and bug_tag rely on variables in conf.py */
     var gitSha = "SHA: e455eb7ba940ccfa490c14aee6dd056d4f6320ac"
-    var bugTitle = "Front-end caching and session back end in Security Guide"
+    var bugTitle = "Share type access control in Security Guide"
     var fieldTags = "sec-guide"
 
     /* "last_updated" is the build date and time. It relies on the

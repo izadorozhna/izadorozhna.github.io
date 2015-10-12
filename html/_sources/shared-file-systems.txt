@@ -24,7 +24,8 @@ Elastic File System (EFS) offering does.
    shared-file-systems/intro.rst
    shared-file-systems/network-and-security-models.rst
    shared-file-systems/security-services.rst
-   shared-file-systems/share-and-share-type-acl.rst
+   shared-file-systems/share-acl.rst
+   shared-file-systems/share-type-acl.rst
    shared-file-systems/policies.rst
    shared-file-systems/checklist.rst
    shared-file-systems/case-studies.rst
