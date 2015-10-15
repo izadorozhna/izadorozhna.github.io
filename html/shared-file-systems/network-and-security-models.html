@@ -149,7 +149,7 @@
   </div>
 </div>
           <div class="row docs-byline">
-            <div class="docs-updated">updated: 2015-10-12 19:14</div>
+            <div class="docs-updated">updated: 2015-10-15 14:27</div>
           </div>
           <div class="row">
             <div class="col-lg-12">
@@ -157,8 +157,8 @@
                 <h5>Contents</h5>
                 <ul>
 <li><a class="reference internal" href="#">Network and security models</a><ul>
-<li><a class="reference internal" href="#flat-vs-segmented-networking">Flat vs segmented networking</a></li>
 <li><a class="reference internal" href="#single-svm-vs-multi-svm-back-ends">Single-svm vs multi-svm back ends</a></li>
+<li><a class="reference internal" href="#flat-vs-segmented-networking">Flat vs segmented networking</a></li>
 <li><a class="reference internal" href="#network-plug-ins">Network plug-ins</a></li>
 </ul>
 </li>
@@ -169,18 +169,198 @@
 
   <div class="section" id="network-and-security-models">
 <span id="shared-fs-network-security-models"></span><h1>Network and security models<a class="headerlink" href="#network-and-security-models" title="Permalink to this headline">¶</a></h1>
-<p>TBD.</p>
+<p>There are big number of the share drives created by different vendors in the
+Shared File Systems Storage service. Each share driver is a python class that
+can be set for the back end (an instance of the manila-share service) and run
+in the back end to manage the share operations (some operations are
+vendor-specific). Each share driver supports one or more driver modes:
+single-svm and multi-svm, but the administrator chooses which mode is used by
+specifying it in the configuration file <tt class="file docutils literal"><span class="pre">manila.conf</span></tt>.</p>
+<p>The multi-svm mode can be configured with flat network, or with segmented
+network. This depends on the network provider.</p>
+<p>It is possible to have separate drivers for different modes on the same
+hardware if that makes sense. Depending on which mode is chosen, the
+administrator needs to provide additional details in the configuration file as
+well.</p>
+<div class="section" id="single-svm-vs-multi-svm-back-ends">
+<span id="single-svm-vs-multi-svm"></span><h2>Single-svm vs multi-svm back ends<a class="headerlink" href="#single-svm-vs-multi-svm-back-ends" title="Permalink to this headline">¶</a></h2>
+<p>Each share driver supports one or more driver modes to configure the back ends.
+Initially there are 2 driver modes for the back ends:</p>
+<ul class="simple">
+<li><strong>Single SVM</strong></li>
+<li><strong>Multi SVM</strong></li>
+</ul>
+<p>The configuration option in <tt class="file docutils literal"><span class="pre">manila.conf</span></tt> file that set the single-svm or
+multi-svm mode is <tt class="docutils literal"><span class="pre">driver_handles_share_servers</span></tt> option, that defines the
+driver mode for share storage life cycle management:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="52%" />
+<col width="32%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Mode</th>
+<th class="head">Config option</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Single-svm</td>
+<td>driver_handles_share_servers = False</td>
+<td>An administrator
+rather than a share
+driver manages the
+bare metal storage
+with some net
+interface instead of
+the presence of the
+share servers.</td>
+</tr>
+<tr class="row-odd"><td>Multi-svm</td>
+<td>driver_handles_share_servers = True</td>
+<td>The share driver
+creates the share
+server and manages,
+or handles, the share
+server life cycle.</td>
+</tr>
+</tbody>
+</table>
+<p>This is the share types which have the extra specifications that help scheduler
+to filter back ends and choose the appropriate back end for the user that
+requested to create a share. The required extra boolean specification for each
+share type is <tt class="docutils literal"><span class="pre">driver_handles_share_servers</span></tt>. As an administrator, you can
+create the share types with the specifications you need. For details of
+managing the share types and configuration the back ends, see <a class="reference external" href="http://docs.openstack.org/admin-guide-cloud/shared_file_systems_share_types.html">Share types</a> and <a class="reference external" href="http://docs.openstack.org/admin-guide-cloud/shared_file_systems_multi_backend.html">Multi-storage configuration</a> documentation.</p>
+<dl class="glossary docutils">
+</dl>
+<dl class="docutils">
+<dt>Single-svm</dt>
+<dd>In this mode, drivers have basically no network requirements whatsoever.
+It&#8217;s assumed that the actual storage controller(s) being managed by the
+driver has all of the network interfaces it&#8217;s going to need. The Shared
+File Systems service will expect the driver to provision shares directly
+without creating any share server beforehand. The Shared File Systems
+service will assume that the network interfaces through which any shares
+are exported are already reachable by all tenants. This mode corresponds to
+what some existing drivers are already doing, but it makes explicit the
+choice for the administrator. In this mode, share networks are not really
+needed at share creation time, and are ignored.</dd>
+<dt>Multi-svm</dt>
+<dd>In this mode, the driver is able to create SVMs and join them to an
+existing network. For providing every new SVM, the drivers can expect from
+the Shared File Systems service a subnet definition and the IP addresses.</dd>
+</dl>
+<p>In the <strong>single-svm</strong> mode the share driver does not handles the storage life
+cycle. An administrator should care about the storage, network interfaces and
+so on. In this mode an administrator can have the storage(s) as a host which
+exports the shares. The main characteristic of this mode is that the storage
+is not handled by the Shared File Systems service. The users in tenants share
+one common network, host, processor, and network pipe. The users can hinder
+each other if there is no correct balancing adjustment. In the public clouds it
+is possible to use all the network pipe some client.</p>
+<p>Unlike the single-svm mode, in the <strong>multi-svm</strong> mode the users have the share
+network and the share server that is created for each share network. Thus all
+users have separate CPU, amount of CPU time, network, capacity and throughput.</p>
+<p>You also can configure the
+<a class="reference internal" href="security-services.html#shared-fs-security-services"><em>security services</em></a> in both single-svm and
+multi-svm back-end modes. But with single-svm back-end mode, an administrator
+should set the desired authentication services manually on the host. And in the
+multi-svm mode of the back end The Shared File Systems service can be
+configured automatically with any of existing security services supported by
+the share driver.</p>
+</div>
 <div class="section" id="flat-vs-segmented-networking">
 <h2>Flat vs segmented networking<a class="headerlink" href="#flat-vs-segmented-networking" title="Permalink to this headline">¶</a></h2>
-<p>TBD.</p>
+<p>The Shared File Systems Storage service allows to work with different types of
+a network:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">local</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">flat</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">GRE</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">VLAN</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">VXLAN</span></tt></li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The Shared File Systems service is just keeping the information about the
+networks, and the real networks are available due to the network provider.
+In OpenStack it can be nova or neutron services, but actually the Shared
+File Systems service can work even out of OpenStack. That is is due to the
+<tt class="docutils literal"><span class="pre">StandaloneNetworkPlugin</span></tt> that can be used with any network platform and
+does not require some specific network services in OpenStack like Neutron
+or Nova. You can set the network parameters in its configuration file.</p>
 </div>
-<div class="section" id="single-svm-vs-multi-svm-back-ends">
-<h2>Single-svm vs multi-svm back ends<a class="headerlink" href="#single-svm-vs-multi-svm-back-ends" title="Permalink to this headline">¶</a></h2>
-<p>TBD.</p>
+<p>In the <a class="reference internal" href="#single-svm-vs-multi-svm"><em>multi-svm</em></a> back-end mode the share
+driver creates and manages the share server for each share network.This mode
+can be divided on two variations:</p>
+<ul class="simple">
+<li>Flat network multi SVM</li>
+<li>Segmented network multi SVM</li>
+</ul>
+<p>Initially, while creating the share network, you can set up either a neutron
+network and subnet or a nova network. To create the share network, the Shared
+File Systems service needs the IDs of the neutron network and subnet, or just
+nova network ID to set up for share server. The third approach is to configure
+the networking without Nova and Neutron services. The
+<tt class="docutils literal"><span class="pre">StandaloneNetworkPlugin</span></tt> can be used with any network platform. You can set
+the network parameters in its configuration file.</p>
+<p>After the share network is created, the Shared File Systems service retrieves
+the network information determined by the network provider: the segmentation
+identifier if the network uses segmentation (for VLAN, this is a value from 1
+to 4094; for VXLAN, this is a value from 1 to 16777215; for GRE, this is a
+value from 1 to 4294967295), the network type (which can be VLAN, VXLAN, GRE,
+flat, or local), the IP version of the network, and the IP block in Classless
+Inter-Domain Routing (CIDR) notation from which to allocate the network.</p>
+<p>Below you can see the comparison of the flat network multi SVM with segmented
+network multi SVM.</p>
+<p><strong>Flat network multi SVM</strong></p>
+<p>This mode, some storage controllers can create SVMs but due to various
+limitations of the physical/logical network all of the SVMs have to be on a
+flat network. In this mode, the share driver needs something to provision IP
+addresses for the SVMs, but the IPs all come out of the same subnet and that
+subnet itself it assumed to be reachable by all tenants.</p>
+<p>The share drivers in the mode can expect Manila to provide a subnet definition
+(network address, mask, broadcast, and gateway addresses) and the specific IP
+address(es) for each share server during creation.</p>
+<p>In this mode, the <a class="reference internal" href="security-services.html#shared-fs-security-services"><em>security service part</em></a> of
+the share networks is important because it allows tenants to specify security
+requirements such as AD/LDAP domains or a Kerberos realm. The subnet part of
+the share network is not really that useful. The Shared File Systems service
+assumes that any hosts referred to in the security service are reachable from
+the subnet where the SVM is created, which limits the situations where this
+mode makes sense.</p>
+<p><strong>Segmented network multi SVM</strong></p>
+<p>In this mode, the share driver is able to create SVMs and join them to an
+existing segmented network.</p>
+<p>At a minimum, the share drivers expect the Shared File systems to provide for
+every new SVM: a subnet definition (network address, mask, broadcast, and
+gateway) and list of IP addresses; a segmentation type (VLAN, VXLAN, GRE, etc);
+and a segmentation ID and any other info relevant to the segmentation type.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The share drivers may not support every type of segmentation, for details
+see the specification for each driver.</p>
+</div>
+<p>The security aspects of the configured networks depends on the configuration
+itself and the network provider.</p>
 </div>
 <div class="section" id="network-plug-ins">
 <span id="shared-fs-network-plugins"></span><h2>Network plug-ins<a class="headerlink" href="#network-plug-ins" title="Permalink to this headline">¶</a></h2>
-<p>TBD.</p>
+<p>The Shared File Systems service architecture defines an abstraction layer for
+network resource provisioning and allowing administrators to choose from a
+different options for how network resources are assigned to their tenants’
+networked storage. There are a set of network plug-ins that provide a variety
+of integration approaches with the network services that are available with
+OpenStack.</p>
+<p>The network plug-ins allow to use any nova or neutron functions and
+configurations, for example, you can use any network segmentation that Neutron
+supports, or you can use flat Nova networks or VLAN-segmented Nova networks, or
+you can use the plugin for specifying networks independently from OpenStack
+networking services. For more information of how to use different network
+plug-ins, see <a class="reference external" href="http://docs.openstack.org/admin-guide-cloud/shared_file_systems_network_plugins.html#network-plug-ins">Shared File Systems service Network plug-ins</a>. The security in using different network plug-ins depends
+on the specific network configuration.</p>
 </div>
 </div>
 
@@ -198,7 +378,7 @@
             <a id="logABugLink3" href="" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
           </div>
           <div class="row docs-byline bottom">
-            <div class="docs-updated">updated: 2015-10-12 19:14</div>
+            <div class="docs-updated">updated: 2015-10-15 14:27</div>
           </div>
           <div class="row">
             <div class="col-lg-8 col-md-8 col-sm-8 docs-license">
@@ -269,7 +449,6 @@
 <li class="toctree-l2"><a class="reference internal" href="share-type-acl.html">Share type access control</a></li>
 <li class="toctree-l2"><a class="reference internal" href="policies.html">Policies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checklist.html">Checklist</a></li>
-<li class="toctree-l2"><a class="reference internal" href="case-studies.html">Case studies</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../networking.html">Networking</a></li>
@@ -392,14 +571,14 @@
         gitlink += pwd.slice(pwd.lastIndexOf("/doc/")) + "/" + sourceFile
 
     /* gitsha, project and bug_tag rely on variables in conf.py */
-    var gitSha = "SHA: e455eb7ba940ccfa490c14aee6dd056d4f6320ac"
+    var gitSha = "SHA: a18d96620aea50fb050e07ccc0fdf6ffc12d0d8c"
     var bugTitle = "Network and security models in Security Guide"
     var fieldTags = "sec-guide"
 
     /* "last_updated" is the build date and time. It relies on the
        conf.py variable "html_last_updated_fmt", which should include
        year/month/day as well as hours and minutes                   */
-    var buildstring = "Release: 0.0.1 on 2015-10-12 19:14"
+    var buildstring = "Release: 0.0.1 on 2015-10-15 14:27"
 
     var fieldComment = encodeURI(buildstring) +
                        lineFeed + encodeURI(gitSha) +

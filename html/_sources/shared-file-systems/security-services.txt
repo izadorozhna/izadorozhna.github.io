@@ -44,23 +44,23 @@ key concepts:
 While creating a security service, you can select one of these authentication
 services:
 
-+------------------------+-----------------------------------------------------+
-| Authentication service | Description                                         |
-+========================+=====================================================+
-| LDAP                   | The Lightweight Directory Access Protocol. An       |
-|                        | application protocol for accessing and maintaining  |
-|                        | distributed directory information services over an  |
-|                        | IP network.                                         |
-+------------------------+-----------------------------------------------------+
-| Kerberos               | The network authentication protocol which works on  |
-|                        | the basis of tickets to allow nodes communicating   |
-|                        | over a non-secure network to prove their identity to|
-|                        | one another in a secure manner.                     |
-+------------------------+-----------------------------------------------------+
-| Active Directory       | A directory service that Microsoft developed for    |
-|                        | Windows domain networks. Uses LDAP, Microsoft's     |
-|                        | version of Kerberos, and DNS.                       |
-+------------------------+-----------------------------------------------------+
++------------------------+----------------------------------------------------+
+| Authentication service | Description                                        |
++========================+====================================================+
+| LDAP                   | The Lightweight Directory Access Protocol. An      |
+|                        | application protocol for accessing and maintaining |
+|                        | distributed directory information services over an |
+|                        | IP network.                                        |
++------------------------+----------------------------------------------------+
+| Kerberos               | The network authentication protocol which works on |
+|                        | the basis of tickets to allow nodes communicating  |
+|                        | over a non-secure network to prove their identity  |
+|                        | to one another in a secure manner.                 |
++------------------------+----------------------------------------------------+
+| Active Directory       | A directory service that Microsoft developed for   |
+|                        | Windows domain networks. Uses LDAP, Microsoft's    |
+|                        | version of Kerberos, and DNS.                      |
++------------------------+----------------------------------------------------+
 
 The Shared File Systems allows you to configure a security service with these
 options:
@@ -78,8 +78,10 @@ security services for a specified share network and disassociate them from
 a share network.
 
 For details of managing the security services via API, see the `Security
-services <http://developer.openstack.org/api-ref-share-v2.html#share-security-
-services>`_. You also can manage the security services via python-manilaclient.
+services API <http://developer.openstack.org/api-ref-share-v2.html#share-security-
+services>`_. You also can manage the security services via python-manilaclient,
+see `Security services CLI managing <http://docs.openstack.org/admin-guide-
+cloud/shared_file_systems_security_services.html>`_.
 
 An administrator and the users as share owners can manage the
 :ref:`access to the shares <shared_fs_share_acl>` by means of creating access
@@ -90,7 +92,7 @@ security service you configure and use.
 Thus as an administrator you can configure the backend to use the definite
 authentication service via network and it will store the users. The
 authentication service can operate with clients without the Shared File System
-and Keystone.
+and Keystone Identity service.
 
 .. note::
     Different authentication services are supported by different share drivers.

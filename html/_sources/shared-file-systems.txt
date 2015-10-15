@@ -28,4 +28,3 @@ Elastic File System (EFS) offering does.
    shared-file-systems/share-type-acl.rst
    shared-file-systems/policies.rst
    shared-file-systems/checklist.rst
-   shared-file-systems/case-studies.rst

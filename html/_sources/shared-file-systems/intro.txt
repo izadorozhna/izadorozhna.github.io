@@ -17,8 +17,10 @@ depth of the data fits into a sql database quite well. For small deployments
 this seems like an optimal solution. For larger deployments, and especially if
 security is a concern, The Shared File Systems service will be moving towards
 multiple data stores with some kind of aggregation system. For more details on
-the API see the `OpenStack Shared File Systems API <http://developer.
-openstack.org/api-ref-share-v2.html>`_ description.
+the API, see the `OpenStack Shared File Systems API <http://developer.
+openstack.org/api-ref-share-v2.html>`_ description. For mode details of the CLI
+using and configuring, see `Shared File Systems Cloud Administrative Guide
+<http://docs.openstack.org/admin-guide-cloud/shared_file_systems.html>`_.
 
 Below is an explanation of the different components.
 
@@ -30,7 +32,7 @@ Below is an explanation of the different components.
         SQL database for data storage.
 
     Web dashboard
-        External component that talks to the api.
+        External component that talks to the api through the Manilaclient.
 
     ``manila-api``
         The service that provides a stable RESTful API. The service
@@ -107,8 +109,8 @@ specifications you can set in the type for scheduler to filter and weigh back
 ends and select an appropriate one for the user that requests the share
 creation. An administrator can add
 :ref:`access to the private share types <shared_fs_share_types_acl>` for
-definite users or tenants in the Keystone. Thus the users which you granted
-access to can see some share types and create shares using them.
+definite users or tenants in the Identity service. Thus the users which you
+granted access to can see some share types and create shares using them.
 
 The shares and share types can be created as public or private. This level of
 visibility defines whether other tenants are able to see these objects or not.
@@ -116,18 +118,15 @@ visibility defines whether other tenants are able to see these objects or not.
 The permissions of API calls for different users and their roles are determined
 by :ref:`policies <shared_fs_policies>` as well as other OpenStack services.
 
-Keystone with different back ends (for example, LDAP, Active Directory) can be
-used for the authentication in the Shared File Systems. See details of the
-identity service security in :doc:`../identity` section.
+The Identity service with different back ends (for example, LDAP, Active
+Directory) can be used for the authentication in the Shared File Systems. See
+details of the identity service security in :doc:`../identity` section.
 
 General security information
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-In common cases manila service user called ``manila`` and it is created in
-``service`` tenant like other OpenStack services.
-
 Since like all other OpenStack projects, the Shared File Systems is registered
-with Keystone, you can find the API endpoints of the share service v1 and v2
-using **manila endpoints** command:
+with the Identity service, you can find the API endpoints of the share service
+v1 and v2 using **manila endpoints** command:
 
 .. code:: console
 
