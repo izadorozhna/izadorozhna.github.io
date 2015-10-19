@@ -149,7 +149,7 @@
   </div>
 </div>
           <div class="row docs-byline">
-            <div class="docs-updated">updated: 2015-10-19 15:49</div>
+            <div class="docs-updated">updated: 2015-10-19 16:15</div>
           </div>
           <div class="row">
             <div class="col-lg-12">
@@ -157,7 +157,7 @@
                 <h5>Contents</h5>
                 <ul>
 <li><a class="reference internal" href="#">Network and security models</a><ul>
-<li><a class="reference internal" href="#share-servers-vs-no-share-servers-back-ends"><em>Share servers</em> vs <em>No share servers</em> back ends</a></li>
+<li><a class="reference internal" href="#share-back-ends-modes">Share back ends modes</a></li>
 <li><a class="reference internal" href="#flat-vs-segmented-networking">Flat vs segmented networking</a></li>
 <li><a class="reference internal" href="#network-plug-ins">Network plug-ins</a></li>
 </ul>
@@ -169,7 +169,7 @@
 
   <div class="section" id="network-and-security-models">
 <span id="shared-fs-network-security-models"></span><h1>Network and security models<a class="headerlink" href="#network-and-security-models" title="Permalink to this headline">¶</a></h1>
-<p>There are big number of the share drives created by different vendors in the
+<p>There are big number of the share drivers created by different vendors in the
 Shared File Systems Storage service. Each share driver is a python class that
 can be set for the back end (an instance of the manila-share service) and run
 in the back end to manage the share operations (some operations are
@@ -182,8 +182,8 @@ network. This depends on the network provider.</p>
 hardware if that makes sense. Depending on which mode is chosen, the
 administrator needs to provide additional details in the configuration file as
 well.</p>
-<div class="section" id="share-servers-vs-no-share-servers-back-ends">
-<span id="share-servers-vs-no-share-servers"></span><h2><em>Share servers</em> vs <em>No share servers</em> back ends<a class="headerlink" href="#share-servers-vs-no-share-servers-back-ends" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="share-back-ends-modes">
+<span id="share-servers-vs-no-share-servers"></span><h2>Share back ends modes<a class="headerlink" href="#share-back-ends-modes" title="Permalink to this headline">¶</a></h2>
 <p>Each share driver supports one or two of possible driver modes to configure the
 back ends. Initially there are 2 driver modes for the back ends:</p>
 <ul class="simple">
@@ -246,8 +246,8 @@ without creating any share server beforehand. The Shared File Systems
 service will assume that the network interfaces through which any shares
 are exported are already reachable by all tenants. This mode corresponds to
 what some existing drivers are already doing, but it makes explicit the
-choice for the administrator. In this mode, share networks are not really
-needed at share creation time, and are ignored.</dd>
+choice for the administrator. In this mode, the share networks are not
+needed at share creation time and must not be provided.</dd>
 <dt>Share servers mode</dt>
 <dd>In this mode, the driver is able to create share servers and join them to
 an existing network. For providing every new share server, the drivers can
@@ -382,7 +382,7 @@ on the specific network configuration.</p>
             <a id="logABugLink3" href="" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
           </div>
           <div class="row docs-byline bottom">
-            <div class="docs-updated">updated: 2015-10-19 15:49</div>
+            <div class="docs-updated">updated: 2015-10-19 16:15</div>
           </div>
           <div class="row">
             <div class="col-lg-8 col-md-8 col-sm-8 docs-license">
@@ -583,7 +583,7 @@ on the specific network configuration.</p>
     /* "last_updated" is the build date and time. It relies on the
        conf.py variable "html_last_updated_fmt", which should include
        year/month/day as well as hours and minutes                   */
-    var buildstring = "Release: 0.0.1 on 2015-10-19 15:49";
+    var buildstring = "Release: 0.0.1 on 2015-10-19 16:15";
 
     var fieldComment = encodeURI(buildstring) +
                        lineFeed + encodeURI(gitSha) +
