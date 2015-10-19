@@ -149,7 +149,7 @@
   </div>
 </div>
           <div class="row docs-byline">
-            <div class="docs-updated">updated: 2015-10-15 14:27</div>
+            <div class="docs-updated">updated: 2015-10-19 15:49</div>
           </div>
           <div class="row">
             <div class="col-lg-12">
@@ -157,7 +157,7 @@
                 <h5>Contents</h5>
                 <ul>
 <li><a class="reference internal" href="#">Network and security models</a><ul>
-<li><a class="reference internal" href="#single-svm-vs-multi-svm-back-ends">Single-svm vs multi-svm back ends</a></li>
+<li><a class="reference internal" href="#share-servers-vs-no-share-servers-back-ends"><em>Share servers</em> vs <em>No share servers</em> back ends</a></li>
 <li><a class="reference internal" href="#flat-vs-segmented-networking">Flat vs segmented networking</a></li>
 <li><a class="reference internal" href="#network-plug-ins">Network plug-ins</a></li>
 </ul>
@@ -174,30 +174,30 @@ Shared File Systems Storage service. Each share driver is a python class that
 can be set for the back end (an instance of the manila-share service) and run
 in the back end to manage the share operations (some operations are
 vendor-specific). Each share driver supports one or more driver modes:
-single-svm and multi-svm, but the administrator chooses which mode is used by
-specifying it in the configuration file <tt class="file docutils literal"><span class="pre">manila.conf</span></tt>.</p>
-<p>The multi-svm mode can be configured with flat network, or with segmented
+<em>share servers</em> and <em>no share servers</em>, but the administrator chooses which
+mode is used by specifying it in the configuration file <tt class="file docutils literal"><span class="pre">manila.conf</span></tt>.</p>
+<p>The <em>share servers</em> mode can be configured with flat network, or with segmented
 network. This depends on the network provider.</p>
 <p>It is possible to have separate drivers for different modes on the same
 hardware if that makes sense. Depending on which mode is chosen, the
 administrator needs to provide additional details in the configuration file as
 well.</p>
-<div class="section" id="single-svm-vs-multi-svm-back-ends">
-<span id="single-svm-vs-multi-svm"></span><h2>Single-svm vs multi-svm back ends<a class="headerlink" href="#single-svm-vs-multi-svm-back-ends" title="Permalink to this headline">¶</a></h2>
-<p>Each share driver supports one or more driver modes to configure the back ends.
-Initially there are 2 driver modes for the back ends:</p>
+<div class="section" id="share-servers-vs-no-share-servers-back-ends">
+<span id="share-servers-vs-no-share-servers"></span><h2><em>Share servers</em> vs <em>No share servers</em> back ends<a class="headerlink" href="#share-servers-vs-no-share-servers-back-ends" title="Permalink to this headline">¶</a></h2>
+<p>Each share driver supports one or two of possible driver modes to configure the
+back ends. Initially there are 2 driver modes for the back ends:</p>
 <ul class="simple">
-<li><strong>Single SVM</strong></li>
-<li><strong>Multi SVM</strong></li>
+<li><strong>share servers mode</strong></li>
+<li><strong>no share servers mode</strong></li>
 </ul>
-<p>The configuration option in <tt class="file docutils literal"><span class="pre">manila.conf</span></tt> file that set the single-svm or
-multi-svm mode is <tt class="docutils literal"><span class="pre">driver_handles_share_servers</span></tt> option, that defines the
-driver mode for share storage life cycle management:</p>
+<p>The configuration option in <tt class="file docutils literal"><span class="pre">manila.conf</span></tt> file that set the share servers
+mode or no share servers mode is <tt class="docutils literal"><span class="pre">driver_handles_share_servers</span></tt> option, that
+defines the driver mode for share storage life cycle management:</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="16%" />
-<col width="52%" />
-<col width="32%" />
+<col width="24%" />
+<col width="49%" />
+<col width="27%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Mode</th>
@@ -206,24 +206,25 @@ driver mode for share storage life cycle management:</p>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td>Single-svm</td>
+<tr class="row-even"><td>share servers</td>
+<td>driver_handles_share_servers = True</td>
+<td>The share driver
+creates the share
+server and manages,
+or handles, the
+share server life
+cycle.</td>
+</tr>
+<tr class="row-odd"><td>no share servers</td>
 <td>driver_handles_share_servers = False</td>
 <td>An administrator
 rather than a share
 driver manages the
 bare metal storage
 with some net
-interface instead of
-the presence of the
-share servers.</td>
-</tr>
-<tr class="row-odd"><td>Multi-svm</td>
-<td>driver_handles_share_servers = True</td>
-<td>The share driver
-creates the share
-server and manages,
-or handles, the share
-server life cycle.</td>
+interface instead
+of the presence of
+the share servers.</td>
 </tr>
 </tbody>
 </table>
@@ -236,7 +237,7 @@ managing the share types and configuration the back ends, see <a class="referenc
 <dl class="glossary docutils">
 </dl>
 <dl class="docutils">
-<dt>Single-svm</dt>
+<dt>No share servers mode</dt>
 <dd>In this mode, drivers have basically no network requirements whatsoever.
 It&#8217;s assumed that the actual storage controller(s) being managed by the
 driver has all of the network interfaces it&#8217;s going to need. The Shared
@@ -247,29 +248,31 @@ are exported are already reachable by all tenants. This mode corresponds to
 what some existing drivers are already doing, but it makes explicit the
 choice for the administrator. In this mode, share networks are not really
 needed at share creation time, and are ignored.</dd>
-<dt>Multi-svm</dt>
-<dd>In this mode, the driver is able to create SVMs and join them to an
-existing network. For providing every new SVM, the drivers can expect from
-the Shared File Systems service a subnet definition and the IP addresses.</dd>
+<dt>Share servers mode</dt>
+<dd>In this mode, the driver is able to create share servers and join them to
+an existing network. For providing every new share server, the drivers can
+expect from the Shared File Systems service a subnet definition and the IP
+addresses.</dd>
 </dl>
-<p>In the <strong>single-svm</strong> mode the share driver does not handles the storage life
-cycle. An administrator should care about the storage, network interfaces and
-so on. In this mode an administrator can have the storage(s) as a host which
-exports the shares. The main characteristic of this mode is that the storage
-is not handled by the Shared File Systems service. The users in tenants share
-one common network, host, processor, and network pipe. The users can hinder
-each other if there is no correct balancing adjustment. In the public clouds it
-is possible to use all the network pipe some client.</p>
-<p>Unlike the single-svm mode, in the <strong>multi-svm</strong> mode the users have the share
-network and the share server that is created for each share network. Thus all
-users have separate CPU, amount of CPU time, network, capacity and throughput.</p>
+<p>In the <strong>no share servers</strong> mode the share driver does not handles the storage
+life cycle. An administrator should care about the storage, network interfaces
+and so on. In this mode an administrator can have the storage(s) as a host
+which exports the shares. The main characteristic of this mode is that the
+storage is not handled by the Shared File Systems service. The users in tenants
+share one common network, host, processor, and network pipe. The users can
+hinder each other if there is no correct balancing adjustment. In the public
+clouds it is possible to use all the network pipe some client.</p>
+<p>Unlike the no share servers mode, in the <strong>share servers</strong> mode the users have
+the share network and the share server that is created for each share network.
+Thus all users have separate CPU, amount of CPU time, network, capacity and
+throughput.</p>
 <p>You also can configure the
-<a class="reference internal" href="security-services.html#shared-fs-security-services"><em>security services</em></a> in both single-svm and
-multi-svm back-end modes. But with single-svm back-end mode, an administrator
-should set the desired authentication services manually on the host. And in the
-multi-svm mode of the back end The Shared File Systems service can be
-configured automatically with any of existing security services supported by
-the share driver.</p>
+<a class="reference internal" href="security-services.html#shared-fs-security-services"><em>security services</em></a> in both <em>share servers</em>
+and <em>no share servers</em> back-end modes. But with <em>no share servers</em> back-end
+mode, an administrator should set the desired authentication services manually
+on the host. And in the <em>share servers</em> mode of the back end The Shared File
+Systems service can be configured automatically with any of existing security
+services supported by the share driver.</p>
 </div>
 <div class="section" id="flat-vs-segmented-networking">
 <h2>Flat vs segmented networking<a class="headerlink" href="#flat-vs-segmented-networking" title="Permalink to this headline">¶</a></h2>
@@ -292,12 +295,12 @@ File Systems service can work even out of OpenStack. That is is due to the
 does not require some specific network services in OpenStack like Neutron
 or Nova. You can set the network parameters in its configuration file.</p>
 </div>
-<p>In the <a class="reference internal" href="#single-svm-vs-multi-svm"><em>multi-svm</em></a> back-end mode the share
-driver creates and manages the share server for each share network.This mode
-can be divided on two variations:</p>
+<p>In the <a class="reference internal" href="#share-servers-vs-no-share-servers"><em>share servers</em></a> back-end mode
+the share driver creates and manages the share server for each share network.
+This mode can be divided on two variations:</p>
 <ul class="simple">
-<li>Flat network multi SVM</li>
-<li>Segmented network multi SVM</li>
+<li>Flat network in <em>share servers</em> back-end mode</li>
+<li>Segmented network in <em>share servers</em> back-end mode</li>
 </ul>
 <p>Initially, while creating the share network, you can set up either a neutron
 network and subnet or a nova network. To create the share network, the Shared
@@ -313,14 +316,14 @@ to 4094; for VXLAN, this is a value from 1 to 16777215; for GRE, this is a
 value from 1 to 4294967295), the network type (which can be VLAN, VXLAN, GRE,
 flat, or local), the IP version of the network, and the IP block in Classless
 Inter-Domain Routing (CIDR) notation from which to allocate the network.</p>
-<p>Below you can see the comparison of the flat network multi SVM with segmented
-network multi SVM.</p>
-<p><strong>Flat network multi SVM</strong></p>
-<p>This mode, some storage controllers can create SVMs but due to various
-limitations of the physical/logical network all of the SVMs have to be on a
-flat network. In this mode, the share driver needs something to provision IP
-addresses for the SVMs, but the IPs all come out of the same subnet and that
-subnet itself it assumed to be reachable by all tenants.</p>
+<p>Below you can see the comparison of the flat network with segmented
+network in <em>share servers</em> back-end mode.</p>
+<p><strong>Flat network in share servers back-end mode</strong></p>
+<p>This mode, some storage controllers can create share servers but due to various
+limitations of the physical/logical network all of the share servers have to be
+on a flat network. In this mode, the share driver needs something to provision
+IP addresses for the share servers, but the IPs all come out of the same subnet
+and that subnet itself it assumed to be reachable by all tenants.</p>
 <p>The share drivers in the mode can expect Manila to provide a subnet definition
 (network address, mask, broadcast, and gateway addresses) and the specific IP
 address(es) for each share server during creation.</p>
@@ -329,15 +332,16 @@ the share networks is important because it allows tenants to specify security
 requirements such as AD/LDAP domains or a Kerberos realm. The subnet part of
 the share network is not really that useful. The Shared File Systems service
 assumes that any hosts referred to in the security service are reachable from
-the subnet where the SVM is created, which limits the situations where this
-mode makes sense.</p>
-<p><strong>Segmented network multi SVM</strong></p>
-<p>In this mode, the share driver is able to create SVMs and join them to an
-existing segmented network.</p>
+the subnet where the share server is created, which limits the situations where
+this mode makes sense.</p>
+<p><strong>Segmented network in share servers back-end mode</strong></p>
+<p>In this mode, the share driver is able to create share servers and join them to
+an existing segmented network.</p>
 <p>At a minimum, the share drivers expect the Shared File systems to provide for
-every new SVM: a subnet definition (network address, mask, broadcast, and
-gateway) and list of IP addresses; a segmentation type (VLAN, VXLAN, GRE, etc);
-and a segmentation ID and any other info relevant to the segmentation type.</p>
+every new share server: a subnet definition (network address, mask, broadcast,
+and gateway) and list of IP addresses; a segmentation type (VLAN, VXLAN, GRE,
+etc); and a segmentation ID and any other info relevant to the segmentation
+type.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The share drivers may not support every type of segmentation, for details
@@ -378,7 +382,7 @@ on the specific network configuration.</p>
             <a id="logABugLink3" href="" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
           </div>
           <div class="row docs-byline bottom">
-            <div class="docs-updated">updated: 2015-10-15 14:27</div>
+            <div class="docs-updated">updated: 2015-10-19 15:49</div>
           </div>
           <div class="row">
             <div class="col-lg-8 col-md-8 col-sm-8 docs-license">
@@ -406,7 +410,7 @@ on the specific network configuration.</p>
   </div>
   <div class="btn-group docs-sidebar-releases">
     <button onclick="location.href='/'" class="btn docs-sidebar-home" data-toggle="tooltip" data-placement="top" title="Docs Home"><i class="fa fa-arrow-circle-o-left"></i></button>
-    <button href="#" type="button" data-toggle="dropdown" class="btn docs-sidebar-release-select">Release: Kilo (April 2015)<i class="fa fa-caret-down"></i></button>
+    <button href="#" type="button" data-toggle="dropdown" class="btn docs-sidebar-release-select">Release: Liberty (October 2015)<i class="fa fa-caret-down"></i></button>
     <ul class="dropdown-menu docs-sidebar-dropdown" role="menu" aria-labelledby="dLabel">
       <li role="presentation" class="dropdown-header">Guides</li>
       <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#install-guides">Install Guides</a></li>
@@ -416,9 +420,9 @@ on the specific network configuration.</p>
       <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#api-guides">API Guides</a></li>
       <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#contributor-guides">Contributor Guides</a></li>
       <li role="presentation" class="dropdown-header">Releases</li>
-      <li role="presentation"><a role="menuitem" tabindex="-1" href="/kilo/">Kilo (current release)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="/liberty/">Liberty (current release)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="/kilo/">Kilo (April 2015)</a></li>
       <li role="presentation"><a role="menuitem" tabindex="-1" href="/juno/">Juno (October 2014)</a></li>
-      <li role="presentation"><a role="menuitem" tabindex="-1" href="/icehouse/">Icehouse (May 2014)</a></li>
       <li role="presentation" class="dropdown-header">Languages</li>
       <li role="presentation"><a role="menuitem" tabindex="-1" href="/ja/">日本語 (Japanese)</a></li>
       <li role="presentation"><a role="menuitem" tabindex="-1" href="/de/">Deutsch (German)</a></li>
@@ -476,8 +480,8 @@ on the specific network configuration.</p>
         <h3>OpenStack</h3>
         <ul>
           <li><a href="/foundation">About the Foundation</a></li>
-          <li><ahref="http://openstack.org/projects/">Projects</a></li>
-          <li><ahref="http://openstack.org/projects/openstack-security/">OpenStack Security</a></li>
+          <li><a href="http://openstack.org/projects/">Projects</a></li>
+          <li><a href="http://openstack.org/projects/openstack-security/">OpenStack Security</a></li>
           <li><a href="http://openstack.org/projects/openstack-faq/">Common Questions</a></li>
           <li><a href="http://openstack.org/blog/">Blog</a></li>
         </ul>
@@ -554,37 +558,38 @@ on the specific network configuration.</p>
 
 <!-- Javascript for page -->
 <script language="JavaScript">
-/* build a description of this page including SHA, source location on git repo and
-   build time, the project's launchpad bug tag and set the HREF of the bug buttons */
+/* build a description of this page including SHA, source location on git repo,
+   build time and the project's launchpad bug tag. Set the HREF of the bug
+   buttons */
 
     var lineFeed = "%0A";
+    var gitURL = "Source: Can't derive source file URL";
 
-        /* "pagename" is the path to the source file, relative to conf.py's
-           directory. However, "pagename" is missing the rst extension. */
-        var sourceFile = "shared-file-systems/network-and-security-models" + ".rst"
+    /* there have been cases where "pagename" wasn't set; better check for it */
+        /* The URL of the source file on Git is based on the giturl variable
+           in conf.py, which must be manually initialized to the source file
+           URL in Git.
+           "pagename" is a standard sphinx parameter containing the name of
+           the source file, without extension.                             */
 
-        /* Using the current working directory, figure out
-           in which book we are and use that information to
-           build a link to the source file on git.openstack.ort */
-        var pwd = "/home/izadorozhna/security-doc/security-guide/source"
-        var gitlink = "Source: http://git.openstack.org/cgit/openstack/openstack-manuals/tree"
-        gitlink += pwd.slice(pwd.lastIndexOf("/doc/")) + "/" + sourceFile
+        var sourceFile = "shared-file-systems/network-and-security-models" + ".rst";
+        gitURL = "Source: http://git.openstack.org/cgit/openstack/security-doc/tree/security-guide/source" + "/" + sourceFile;
 
     /* gitsha, project and bug_tag rely on variables in conf.py */
-    var gitSha = "SHA: a18d96620aea50fb050e07ccc0fdf6ffc12d0d8c"
-    var bugTitle = "Network and security models in Security Guide"
-    var fieldTags = "sec-guide"
+    var gitSha = "SHA: 28bd9c7ae649413b06418f750a5d3c6ec296ac16";
+    var bugTitle = "Network and security models in Security Guide";
+    var fieldTags = "sec-guide";
 
     /* "last_updated" is the build date and time. It relies on the
        conf.py variable "html_last_updated_fmt", which should include
        year/month/day as well as hours and minutes                   */
-    var buildstring = "Release: 0.0.1 on 2015-10-15 14:27"
+    var buildstring = "Release: 0.0.1 on 2015-10-19 15:49";
 
     var fieldComment = encodeURI(buildstring) +
                        lineFeed + encodeURI(gitSha) +
-                       lineFeed + encodeURI(gitlink)
+                       lineFeed + encodeURI(gitURL) ;
 
-    logABug(bugTitle, fieldComment, fieldTags)
+    logABug(bugTitle, fieldComment, fieldTags);
 </script>
 
 <!-- Javascript for search boxes (both sidebar and top nav) -->
