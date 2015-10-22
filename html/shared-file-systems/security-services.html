@@ -149,7 +149,7 @@
   </div>
 </div>
           <div class="row docs-byline">
-            <div class="docs-updated">updated: 2015-10-19 16:46</div>
+            <div class="docs-updated">updated: 2015-10-20 13:53</div>
           </div>
           <div class="row">
             <div class="col-lg-12">
@@ -170,8 +170,8 @@
 <span id="shared-fs-security-services"></span><h1>Security services<a class="headerlink" href="#security-services" title="Permalink to this headline">¶</a></h1>
 <p>For authentication and authorization of the clients, the Shared File Systems
 Storage service can optionally be configured with different network
-authentication protocols (supported are LDAP, Kerberos, or Microsoft Active
-directory authentication service).</p>
+authentication protocols. Supported authentication protocols are LDAP,
+Kerberos, or Microsoft Active directory authentication service.</p>
 <div class="section" id="introduction-to-security-services">
 <h2>Introduction to security services<a class="headerlink" href="#introduction-to-security-services" title="Permalink to this headline">¶</a></h2>
 <p>After creating the share and getting its export location users have no
@@ -199,7 +199,7 @@ key concepts:</p>
 <li>Administrators should not care about security services.</li>
 <li>Inside The Shared File Systems API, a <tt class="docutils literal"><span class="pre">security_service</span></tt> is associated with
 the <tt class="docutils literal"><span class="pre">share_networks</span></tt>.</li>
-<li>Vendors/drivers use the information in the security service to configure
+<li>The share drivers use the information in the security service to configure
 newly created share servers.</li>
 </ul>
 <p>While creating a security service, you can select one of these authentication
@@ -259,23 +259,23 @@ security service you configure and use.</p>
 <p>Thus as an administrator you can configure the backend to use the definite
 authentication service via network and it will store the users. The
 authentication service can operate with clients without the Shared File System
-and Keystone Identity service.</p>
+and the Identity service.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Different authentication services are supported by different share drivers.
 For details of supporting of features by different drivers, see
 <a class="reference external" href="http://docs.openstack.org/developer/manila/devref/share_back_ends_feature_support_mapping.html">Manila share features support mapping</a>.
 The support of definite authentication service by the driver also doesn&#8217;t
-mean that it can be configured with any shared file system protocol (NFS,
-CIFS, GlusterFS, or HDFS). See the driver vendor&#8217;s documentation for the
-specific driver and its configuration for the security services.</p>
+mean that it can be configured with any shared file system protocol.
+Supported shared file systems protocols are NFS, CIFS, GlusterFS, and HDFS.
+See the driver vendor&#8217;s documentation for the specific driver and its
+configuration for the security services.</p>
 </div>
-<p>The Generic (Cinder as back-end) driver is not the production solution. It uses
-Nova VMs and Cinder volumes, cares about everything (the VMs, networking,
-keypairs, security groups) while creating the share servers. The Generic driver
-does not support any of the hereinabove security services. The Hitachi HNAS, HP
-3PAR, Huawei, Quobyte, EMC Isilon, ZFS also do not support any of the security
-services.</p>
+<p>The Generic (Block Storage as back-end) driver is not the production solution.
+It uses the Compute service VMs and the Block Storage service volumes, cares
+about everything: the VMs, networking, keypairs, security groups, while
+creating the share servers. The Generic driver and some other drivers do not
+support any of the hereinabove security services.</p>
 <p>The Generic Driver with NFS or CIFS shared file system protocol supports only
 authentication method through the IP address.</p>
 <div class="admonition tip">
@@ -293,8 +293,6 @@ configured to authenticate via IP address.</li>
 </ul>
 <p class="last">The authentication via IP is the most weak.</p>
 </div>
-<p>The only driver that supports all three authentication services is NetApp
-Clustered Data ONTAP from the OpenStack Juno release.</p>
 <p>The recommended configuration for the Shared File Systems service real usage
 is to create a share with CIFS share protocol and add to it the Microsoft
 Active Directory directory service. In this configuration you&#8217;ll get the
@@ -318,7 +316,7 @@ systems.</p>
             <a id="logABugLink3" href="" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
           </div>
           <div class="row docs-byline bottom">
-            <div class="docs-updated">updated: 2015-10-19 16:46</div>
+            <div class="docs-updated">updated: 2015-10-20 13:53</div>
           </div>
           <div class="row">
             <div class="col-lg-8 col-md-8 col-sm-8 docs-license">
@@ -512,14 +510,14 @@ systems.</p>
         gitURL = "Source: http://git.openstack.org/cgit/openstack/security-doc/tree/security-guide/source" + "/" + sourceFile;
 
     /* gitsha, project and bug_tag rely on variables in conf.py */
-    var gitSha = "SHA: 28bd9c7ae649413b06418f750a5d3c6ec296ac16";
+    var gitSha = "SHA: 06a9b8c93903561db4f8e787767e1a9320ab6c92";
     var bugTitle = "Security services in Security Guide";
     var fieldTags = "sec-guide";
 
     /* "last_updated" is the build date and time. It relies on the
        conf.py variable "html_last_updated_fmt", which should include
        year/month/day as well as hours and minutes                   */
-    var buildstring = "Release: 0.0.1 on 2015-10-19 16:46";
+    var buildstring = "Release: 0.0.1 on 2015-10-20 13:53";
 
     var fieldComment = encodeURI(buildstring) +
                        lineFeed + encodeURI(gitSha) +
