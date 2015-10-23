@@ -1,0 +1,21 @@
+.. _file_shares_backup:
+
+==================
+Backup and restore
+==================
+
+Manila provides mechanism of snapshots to help users backup theirs own data.
+Use :command:`manila snapshot-create` for it.
+
+.. note::
+    Share cann't be deleted while it has saved snapshots.
+
+To restore your data from snapshot, use :command:`manila create` with key
+`--snapshot-id`. It creates new share from exiting snapshot.
+
+To export snapshot, you can create shares from it, then mount
+new share to instance and then directly copy files from attached share into
+archive.
+
+To import snapshot, create new share with appropriate size, attach it to
+instance and then copy file from archive to attached file system.

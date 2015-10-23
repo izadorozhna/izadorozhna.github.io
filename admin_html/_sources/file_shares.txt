@@ -1,0 +1,20 @@
+.. _file_share:
+
+==========
+File Share
+==========
+
+Manila is the OpenStack File Share service. For certain applications,
+file-based storage has significant advantages over block storage and object
+storage, and a large amount of existing software is designed around file-based
+file-based storage. Manila provides a simple interface that allows you to
+create and configure shared file systems quickly and easily. This service is
+somewhat similar to the Amazon Elastic File System (EFS) offering.
+
+.. toctree::
+      :maxdepth: 1
+
+      file_shares_intro.rst
+      file_shares_manage_shares.rst
+      file_shares_troubleshoot.rst
+      file_shares_samples.rst

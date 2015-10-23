@@ -1,0 +1,8 @@
+.. _shared_file_systems_troubleshoot:
+
+==============================
+Troubleshoot your installation
+==============================
+
+This section provides useful tips to help you troubleshoot your the OpenStack
+File Share service installation.

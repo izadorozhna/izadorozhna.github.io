@@ -1,0 +1,375 @@
+.. _shared_file_systems_manage_and_unmanage_share:
+
+=========================
+Manage and Unmanage Share
+=========================
+
+With default configuration the Shared File Systems service creates a share
+server for the export of shares and the share driver manages, or handles, the
+share server life cycle.
+
+To **manage** a share means that an administrator rather than a share driver
+manages the storage life cycle. This approach is appropriate when an
+administrator already has the custom non-manila share with its size, Shared
+File System protocol, export path and so on, and administrator wants to
+register it in the Shared File System Storage service.
+
+To **unmanage** a share means to unregister a specified share from the Shared
+File System Storage service. An administrator can manage the custom share back.
+
+Since with the generic driver, shares are hosted on Compute VMs, in the
+examples the compute VM is used to create a new host and to create a share
+hosted on it.
+
+Create managed share
+--------------------
+
+This is a simple example of how to create a managed share on the custom nova
+VM.
+
+To create a managed share you need to:
+
+- Launch a nova instance, check that it booted successfully.
+
+- Create new backend with ``driver_handles_share_servers = False`` option and
+  the booted instance as server instance.
+
+- Restart manila-share service.
+
+- Create a share type with ``driver_handles_share_servers`` set as ``False``.
+
+- Create share with this share type and without share network.
+
+Launch a nova instance. In the example manila service image, manila
+service flavor, manila service network and manila service security group were
+used.
+
+.. code:: console
+
+ $ nova boot --flavor manila-service-flavor --image 9c03f574-076f-4114-a1f3-ac2042fe7531 --security-groups manila-service --nic net-id=3b5a629a-e7a1-46a3-afb2-ab666fb884bc --key-name manila-service instance_for_backend_cannes
+ +--------------------------------------+--------------------------------------+
+ | Property                             | Value                                |
+ +--------------------------------------+--------------------------------------+
+ | OS-DCF:diskConfig                    | MANUAL                               |
+ | OS-EXT-AZ:availability_zone          |                                      |
+ | OS-EXT-SRV-ATTR:host                 | -                                    |
+ | OS-EXT-SRV-ATTR:hostname             | instance-for-backend-cannes          |
+ | OS-EXT-SRV-ATTR:hypervisor_hostname  | -                                    |
+ | OS-EXT-SRV-ATTR:instance_name        | instance-00000004                    |
+ | OS-EXT-SRV-ATTR:kernel_id            |                                      |
+ | OS-EXT-SRV-ATTR:launch_index         | 0                                    |
+ | OS-EXT-SRV-ATTR:ramdisk_id           |                                      |
+ | OS-EXT-SRV-ATTR:reservation_id       | r-fevb0cv3                           |
+ | OS-EXT-SRV-ATTR:root_device_name     | -                                    |
+ | OS-EXT-SRV-ATTR:user_data            | -                                    |
+ | OS-EXT-STS:power_state               | 0                                    |
+ | OS-EXT-STS:task_state                | scheduling                           |
+ | OS-EXT-STS:vm_state                  | building                             |
+ | OS-SRV-USG:launched_at               | -                                    |
+ | OS-SRV-USG:terminated_at             | -                                    |
+ | accessIPv4                           |                                      |
+ | accessIPv6                           |                                      |
+ | adminPass                            | Kzm9HQgr96sD                         |
+ | config_drive                         |                                      |
+ | created                              | 2015-10-01T08:17:55Z                 |
+ | flavor                               | manila-service-flavor (100)          |
+ | hostId                               |                                      |
+ | id                                   | c2f7d8f9-1358-466f-87f6-84589b498c99 |
+ | image                                | manila-service-image (9c03f574-076...|
+ | key_name                             | manila-service                       |
+ | locked                               | False                                |
+ | metadata                             | {}                                   |
+ | name                                 | instance_for_backend_cannes          |
+ | os-extended-volumes:volumes_attached | []                                   |
+ | progress                             | 0                                    |
+ | security_groups                      | manila-service                       |
+ | status                               | BUILD                                |
+ | tenant_id                            | 24c6491074e942309a908c674606f598     |
+ | updated                              | 2015-10-01T08:17:55Z                 |
+ | user_id                              | 9f433e518f8044718229765befa81916     |
+ +--------------------------------------+--------------------------------------+
+
+.. _configure_backend_for_managed_share:
+
+Configure new backend in :file:`/etc/manila/manila.conf`. Add new section with
+a custom backend name (in the example, the custom name is ``cannes``).
+
+.. note::
+    You should set ``driver_handles_share_servers`` to ``False``, thus you
+    making the managed by admin mode and the Share File System storage won't
+    create a share  on a share server.
+
+Set the ID of the booted nova instance in ``service_instance_name_or_id`` and
+its IP address in ``service_net_name_or_ip`` and ``tenant_net_name_or_ip``.
+
+.. code-block:: ini
+   :linenos:
+
+   [cannes]
+   driver_handles_share_servers = False
+   service_instance_user = manila
+   service_image_name = manila-service-image
+   path_to_private_key = /opt/stack/.ssh/id_rsa
+   path_to_public_key = /opt/stack/.ssh/id_rsa.pub
+   share_backend_name = CANNES
+   share_driver = manila.share.drivers.generic.GenericShareDriver
+   service_instance_name_or_id = c2f7d8f9-1358-466f-87f6-84589b498c99
+   service_net_name_or_ip = 10.254.0.7
+   tenant_net_name_or_ip = 10.254.0.7
+
+In the [DEFAULT] section new backend should be enabled. Add its name in the
+list.
+
+.. code-block:: ini
+   :linenos:
+
+   enabled_share_backends = generic1, cannes
+
+Restart manila-share service. Check a list of services with
+**manila service-list** command. New enabled ``manila-share`` service with
+host named ``manila@cannes`` should appear in a list. Read more about Shared
+File System services in the section :ref:`Multi-storage configuration <shared_file_systems_multi_backend>`.
+
+.. code:: console
+
+ $ manila service-list
+ +----+------------------+-----------------+------+---------+-------+----------------------------+
+ | Id | Binary           | Host            | Zone | Status  | State | Updated_at                 |
+ +----+------------------+-----------------+------+---------+-------+----------------------------+
+ | 1  | manila-share     | manila@generic1 | nova | enabled | up    | 2015-10-01T08:32:03.000000 |
+ | 2  | manila-scheduler | manila          | nova | enabled | up    | 2015-10-01T08:32:04.000000 |
+ | 3  | manila-share     | manila@cannes   | nova | enabled | up    | 2015-10-01T08:32:05.000000 |
+ +----+------------------+-----------------+------+---------+-------+----------------------------+
+
+You also can get the list of pools and see new available backend:
+
+.. code:: console
+
+ $ manila pool-list
+ +--------------------------+--------+----------+----------+
+ | Name                     | Host   | Backend  | Pool     |
+ +--------------------------+--------+----------+----------+
+ | manila@cannes#CANNES     | manila | cannes   | CANNES   |
+ | manila@generic1#GENERIC1 | manila | generic1 | GENERIC1 |
+ +--------------------------+--------+----------+----------+
+
+Create a new share type with ``driver_handles_share_servers`` set as ``False``.
+So back end with ``driver_handles_share_servers=False`` will be chosen if you
+create a share with such a share type. For details, see
+:ref:`shared_file_systems_share_type_management`.
+
+.. code:: console
+
+ $ manila type-create for_managing False
+ +---------+--------------+--------------------------------------+-------------------------+
+ | ID      | Name         | required_extra_specs                 | optional_extra_specs    |
+ +---------+--------------+--------------------------------------+-------------------------+
+ | 1eafb...| for_managing | driver_handles_share_servers : False | snapshot_support : True |
+ +---------+--------------+--------------------------------------+-------------------------+
+
+Create a share with the new ``for_managing`` share type:
+
+.. code:: console
+
+ $ manila create nfs 1 --name Share3 --description "Managed share" --share-type for_managing
+ +-----------------------------+--------------------------------------+
+ | Property                    | Value                                |
+ +-----------------------------+--------------------------------------+
+ | status                      | None                                 |
+ | share_type_name             | for_managing                         |
+ | description                 | Managed share                        |
+ | availability_zone           | None                                 |
+ | share_network_id            | None                                 |
+ | export_locations            | []                                   |
+ | share_server_id             | None                                 |
+ | host                        | None                                 |
+ | snapshot_id                 | None                                 |
+ | is_public                   | False                                |
+ | task_state                  | None                                 |
+ | snapshot_support            | True                                 |
+ | id                          | bb9f0f28-4ca7-4fcb-a37c-9e3624584bec |
+ | size                        | 1                                    |
+ | name                        | Share3                               |
+ | share_type                  | 1eafb65f-1987-44a9-9a98-20af91c95662 |
+ | created_at                  | 2015-10-01T09:44:59.669010           |
+ | export_location             | None                                 |
+ | share_proto                 | NFS                                  |
+ | consistency_group_id        | None                                 |
+ | source_cgsnapshot_member_id | None                                 |
+ | project_id                  | 20787a7ba11946adad976463b57d8a2f     |
+ | metadata                    | {}                                   |
+ +-----------------------------+--------------------------------------+
+
+Check that the share has status ``available`` and its host.
+Note that the manage-share service host in this format: ``host@backend#POOL``:
+
+- *host*. The host name for the back end.
+
+- *backend*. The name of the back end.
+
+- *POOL*. The pool name for the back end.
+
+New managed share ``Share3`` should have a host ``manila@cannes#CANNES``:
+
+.. code:: console
+
+ $ manila show Share3
+ +-----------------------------+---------------------------------------------------------------+
+ | Property                    | Value                                                         |
+ +-----------------------------+---------------------------------------------------------------+
+ | status                      | available                                                     |
+ | share_type_name             | for_managing                                                  |
+ | description                 | Managed share                                                 |
+ | availability_zone           | nova                                                          |
+ | share_network_id            | None                                                          |
+ | export_locations            | 10.254.0.7:/shares/share-d1a66eed-a724-4cbb-a886-2f97926bd3b3 |
+ | share_server_id             | None                                                          |
+ | host                        | manila@cannes#CANNES                                          |
+ | snapshot_id                 | None                                                          |
+ | is_public                   | False                                                         |
+ | task_state                  | None                                                          |
+ | snapshot_support            | True                                                          |
+ | id                          | bb9f0f28-4ca7-4fcb-a37c-9e3624584bec                          |
+ | size                        | 1                                                             |
+ | name                        | Share3                                                        |
+ | share_type                  | 1eafb65f-1987-44a9-9a98-20af91c95662                          |
+ | created_at                  | 2015-10-01T09:44:59.000000                                    |
+ | share_proto                 | NFS                                                           |
+ | consistency_group_id        | None                                                          |
+ | source_cgsnapshot_member_id | None                                                          |
+ | project_id                  | 20787a7ba11946adad976463b57d8a2f                              |
+ | metadata                    | {}                                                            |
+ +-----------------------------+---------------------------------------------------------------+
+
+Unmanage share
+--------------
+You created and managed the share named ``Share3``. Unmanage ``Share3``,
+so the manila service will unregister the share. The share can be registered
+back if you manage it back then.
+
+.. note::
+    The share unmanage operation is not supported for shares that were
+    created on top of share servers (created with share networks). You can
+    unmanage a share that has no dependent snapshots.
+
+To unmanage managed share, run **manila unmanage <share>** command. Then try to
+print the information about it. The expected behaviour is that manila won't
+find the share:
+
+.. code:: console
+
+ $ manila unmanage Share3
+ $ manila show Share3
+ ERROR: No share with a name or ID of 'Share3' exists.
+
+The share can be registered back if you :ref:`manage <manage_share>` it back
+then.
+
+.. _manage_share:
+
+Manage share
+------------
+If the share was unmanaged, or an administrator has a custom existing share on
+some host and an administrator wants to register in manila, the share should be
+manged. To register the share you need to run **manila manage** command which
+has such arguments:
+
+.. code:: console
+
+ manila manage [--name <name>] [--description <description>]
+               [--share_type <share-type>]
+               [--driver_options [<key=value> [<key=value> ...]]]
+               <service_host> <protocol> <export_path>
+
+The positional arguments are:
+
+- service_host. The manage-share service host in this format:
+  ``host@backend#POOL`` which consists of the host name for the back end,
+  the name of the back end and the pool name for the back end.
+  In in case of ``Share3`` the ``service_host`` is ``manila@cannes#CANNES``.
+
+- protocol. The Shared File Systems protocol of the share to manage. A valid
+  value is NFS, CIFS, GlusterFS, or HDFS. For ``Share3``, ``nfs`` Shared File
+  Systems protocol will be specified.
+
+- export_path. The share export path in the format appropriate for the
+  protocol:
+
+  - NFS protocol. 10.0.0.1:/foo_path. For example,
+    ``10.254.0.5:/shares/share-42033c24-0261-424f-abda -4fef2f6dbfd5``.
+
+  - CIFS protocol. \\\\10.0.0.1\\foo_name_of_cifs_share.
+
+  ``Share3`` has ``nfs`` protocol and
+  ``10.254.0.7:/shares/share-d1a66eed-a724-4cbb-a886-2f97926bd3b3``
+  export path.
+
+The ``driver_options`` is an optional set of one or more key and value pairs,
+that describe driver options.
+Note that the share type must have ``driver_handles_share_servers = False``
+option, so created earlier share type named ``for_managing`` was used.
+
+To manage share, run:
+
+.. code:: console
+
+ $ manila manage manila@cannes#CANNES nfs 10.254.0.7:/shares/share-d1a66eed-a724-4cbb-a886-2f97926bd3b3 --name Share3 --description "We manage share." --share_type for_managing
+ +-----------------------------+---------------------------------------------------------------+
+ | Property                    | Value                                                         |
+ +-----------------------------+---------------------------------------------------------------+
+ | status                      | manage_starting                                               |
+ | share_type_name             | for_managing                                                  |
+ | description                 | We manage share.                                              |
+ | availability_zone           | None                                                          |
+ | share_network_id            | None                                                          |
+ | export_locations            | []                                                            |
+ | share_server_id             | None                                                          |
+ | host                        | manila@cannes#CANNES                                          |
+ | snapshot_id                 | None                                                          |
+ | is_public                   | False                                                         |
+ | task_state                  | None                                                          |
+ | snapshot_support            | True                                                          |
+ | id                          | 5c1f644a-6521-4699-b480-b03d17e2d21d                          |
+ | size                        | None                                                          |
+ | name                        | Share3                                                        |
+ | share_type                  | 1eafb65f-1987-44a9-9a98-20af91c95662                          |
+ | created_at                  | 2015-10-01T10:35:52.000000                                    |
+ | export_location             | 10.254.0.7:/shares/share-d1a66eed-a724-4cbb-a886-2f97926bd3b3 |
+ | share_proto                 | NFS                                                           |
+ | consistency_group_id        | None                                                          |
+ | source_cgsnapshot_member_id | None                                                          |
+ | project_id                  | 20787a7ba11946adad976463b57d8a2f                              |
+ | metadata                    | {}                                                            |
+ +-----------------------------+---------------------------------------------------------------+
+
+Check that he share is available:
+
+.. code:: console
+
+ $ manila show Share3
+ +-----------------------------+---------------------------------------------------------------+
+ | Property                    | Value                                                         |
+ +-----------------------------+---------------------------------------------------------------+
+ | status                      | available                                                     |
+ | share_type_name             | for_managing                                                  |
+ | description                 | We manage share.                                              |
+ | availability_zone           | nova                                                          |
+ | share_network_id            | None                                                          |
+ | export_locations            | 10.254.0.7:/shares/share-d1a66eed-a724-4cbb-a886-2f97926bd3b3 |
+ | share_server_id             | None                                                          |
+ | host                        | manila@cannes#CANNES                                          |
+ | snapshot_id                 | None                                                          |
+ | is_public                   | False                                                         |
+ | task_state                  | None                                                          |
+ | snapshot_support            | True                                                          |
+ | id                          | 5c1f644a-6521-4699-b480-b03d17e2d21d                          |
+ | size                        | 1                                                             |
+ | name                        | Share3                                                        |
+ | share_type                  | 1eafb65f-1987-44a9-9a98-20af91c95662                          |
+ | created_at                  | 2015-10-01T10:35:52.000000                                    |
+ | share_proto                 | NFS                                                           |
+ | consistency_group_id        | None                                                          |
+ | source_cgsnapshot_member_id | None                                                          |
+ | project_id                  | 20787a7ba11946adad976463b57d8a2f                              |
+ | metadata                    | {}                                                            |
+ +-----------------------------+---------------------------------------------------------------+

@@ -1,0 +1,6 @@
+==============================
+Troubleshoot your installation
+==============================
+
+This section provides useful tips to help you troubleshoot your Shared File
+Systems installation.

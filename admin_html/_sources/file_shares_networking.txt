@@ -1,0 +1,11 @@
+.. _file_shares_networking:
+
+==========
+Networking
+==========
+
+Not all Manila drivers require interaction with Networking API. Generic driver
+with one of existing configurations requires networking management by design.
+Both Nova and Neutron can be used as network service providers. This
+configuration is generally used to show as much Manila features as it possible
+on Devstack deployment.
