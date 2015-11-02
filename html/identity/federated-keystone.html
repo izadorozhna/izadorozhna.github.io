@@ -149,7 +149,7 @@
   </div>
 </div>
           <div class="row docs-byline">
-            <div class="docs-updated">updated: 2015-10-23 11:30</div>
+            <div class="docs-updated">updated: 2015-11-02 16:03</div>
           </div>
           <div class="row">
             <div class="col-lg-12">
@@ -279,9 +279,9 @@ Identity service.</p>
 <p>To enable Federation, perform the following steps:</p>
 <ol class="arabic">
 <li><p class="first">Run the Identity service under Apache, instead of using
-<tt class="docutils literal"><span class="pre">keystone-all</span></tt>.</p>
+<code class="docutils literal"><span class="pre">keystone-all</span></code>.</p>
 <ol class="arabic">
-<li><p class="first">Enable TLS support. Install <tt class="docutils literal"><span class="pre">mod_nss</span></tt> according to your distribution,
+<li><p class="first">Enable TLS support. Install <code class="docutils literal"><span class="pre">mod_nss</span></code> according to your distribution,
 then apply the following patch and restart HTTPD:</p>
 <div class="code diff highlight-python"><div class="highlight"><pre>--- /etc/httpd/conf.d/nss.conf.orig 2012-03-29 12:59:06.319470425 -0400
 +++ /etc/httpd/conf.d/nss.conf      2012-03-29 12:19:38.862721465 -0400
@@ -317,14 +317,14 @@ example:</p>
 </pre></div>
 </div>
 </li>
-<li><p class="first">Copy the <tt class="file docutils literal"><span class="pre">httpd/wsgi-keystone.conf</span></tt> file to the appropriate location
+<li><p class="first">Copy the <code class="file docutils literal"><span class="pre">httpd/wsgi-keystone.conf</span></code> file to the appropriate location
 for your Apache server, for example,
-<tt class="file docutils literal"><span class="pre">/etc/httpd/conf.d/wsgi-keystone.conf</span></tt> file.</p>
+<code class="file docutils literal"><span class="pre">/etc/httpd/conf.d/wsgi-keystone.conf</span></code> file.</p>
 </li>
-<li><p class="first">Create the directory <tt class="docutils literal"><span class="pre">/var/www/cgi-bin/keystone/</span></tt>. Then link the files
-<tt class="docutils literal"><span class="pre">main</span></tt> and <tt class="docutils literal"><span class="pre">admin</span></tt> to the <tt class="file docutils literal"><span class="pre">keystone.py</span></tt> file in this directory.</p>
+<li><p class="first">Create the directory <code class="docutils literal"><span class="pre">/var/www/cgi-bin/keystone/</span></code>. Then link the files
+<code class="docutils literal"><span class="pre">main</span></code> and <code class="docutils literal"><span class="pre">admin</span></code> to the <code class="file docutils literal"><span class="pre">keystone.py</span></code> file in this directory.</p>
 <p>For a distribution appropriate place, it should probably be copied to
-<tt class="file docutils literal"><span class="pre">/usr/share/openstack/keystone/httpd/keystone.py</span></tt>.</p>
+<code class="file docutils literal"><span class="pre">/usr/share/openstack/keystone/httpd/keystone.py</span></code>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">This path is Ubuntu-specific. For other distributions, replace with
@@ -333,7 +333,7 @@ appropriate path.</p>
 </li>
 <li><p class="first">If you are running with SELinux enabled ensure that the file has the
 appropriate SELinux context to access the linked file. For example, if
-you have the file in <tt class="docutils literal"><span class="pre">/var/www/cgi-bin</span></tt> location, you can do this by
+you have the file in <code class="docutils literal"><span class="pre">/var/www/cgi-bin</span></code> location, you can do this by
 running:</p>
 <div class="code console highlight-python"><div class="highlight"><pre><span class="c"># restorecon /var/www/cgi-bin</span>
 </pre></div>
@@ -341,15 +341,15 @@ running:</p>
 <p>Adding it in a different location requires you set up your SELinux
 policy accordingly.</p>
 </li>
-<li><p class="first">Make sure you use either the SQL or the <tt class="docutils literal"><span class="pre">memcached</span></tt> driver for tokens,
+<li><p class="first">Make sure you use either the SQL or the <code class="docutils literal"><span class="pre">memcached</span></code> driver for tokens,
 otherwise the tokens will not be shared between the processes of the
 Apache HTTPD server.</p>
-<p>For SQL, in <tt class="file docutils literal"><span class="pre">/etc/keystone/keystone.conf</span></tt> , set:</p>
+<p>For SQL, in <code class="file docutils literal"><span class="pre">/etc/keystone/keystone.conf</span></code> , set:</p>
 <div class="code ini highlight-python"><div class="highlight"><pre><span class="p">[</span><span class="n">token</span><span class="p">]</span>
 <span class="n">driver</span> <span class="o">=</span> <span class="n">keystone</span><span class="o">.</span><span class="n">token</span><span class="o">.</span><span class="n">backends</span><span class="o">.</span><span class="n">sql</span><span class="o">.</span><span class="n">Token</span>
 </pre></div>
 </div>
-<p>For <tt class="docutils literal"><span class="pre">memcached</span></tt>, in <tt class="file docutils literal"><span class="pre">/etc/keystone/keystone.conf</span></tt>, set:</p>
+<p>For <code class="docutils literal"><span class="pre">memcached</span></code>, in <code class="file docutils literal"><span class="pre">/etc/keystone/keystone.conf</span></code>, set:</p>
 <div class="code ini highlight-python"><div class="highlight"><pre><span class="p">[</span><span class="n">token</span><span class="p">]</span>
 <span class="n">driver</span> <span class="o">=</span> <span class="n">keystone</span><span class="o">.</span><span class="n">token</span><span class="o">.</span><span class="n">backends</span><span class="o">.</span><span class="n">memcache</span><span class="o">.</span><span class="n">Token</span>
 </pre></div>
@@ -364,18 +364,18 @@ both point to a common memcached instance.</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The <tt class="docutils literal"><span class="pre">apt-get</span></tt> command is Ubuntu specific. For other distributions,
+<p class="last">The <code class="docutils literal"><span class="pre">apt-get</span></code> command is Ubuntu specific. For other distributions,
 replace with appropriate command.</p>
 </div>
 </li>
 <li><p class="first">Configure the Identity service virtual host and adjust the config to
 properly handle SAML2 workflow.</p>
-<p>Add <tt class="docutils literal"><span class="pre">WSGIScriptAlias</span></tt> directive to your vhost configuration:</p>
+<p>Add <code class="docutils literal"><span class="pre">WSGIScriptAlias</span></code> directive to your vhost configuration:</p>
 <div class="code ini highlight-python"><div class="highlight"><pre>WSGIScriptAliasMatch ^(/v3/OS-FEDERATION/identity_providers/.*?/protocols/.*?/auth)$ /var/www/keystone/main/$1
 </pre></div>
 </div>
 </li>
-<li><p class="first">Add two <tt class="docutils literal"><span class="pre">&lt;Location&gt;</span></tt> directives to the <tt class="file docutils literal"><span class="pre">wsgi-keystone.conf</span></tt> file:</p>
+<li><p class="first">Add two <code class="docutils literal"><span class="pre">&lt;Location&gt;</span></code> directives to the <code class="file docutils literal"><span class="pre">wsgi-keystone.conf</span></code> file:</p>
 <div class="code ini highlight-python"><div class="highlight"><pre>&lt;Location /Shibboleth.sso&gt;
 SetHandler shib
 &lt;/Location&gt;
@@ -392,10 +392,10 @@ Require valid-user
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p>The option <tt class="docutils literal"><span class="pre">saml2</span></tt> may be different in your deployment, but do not
+<p>The option <code class="docutils literal"><span class="pre">saml2</span></code> may be different in your deployment, but do not
 use a wildcard value. Otherwise every Federated protocol will be
 handled by Shibboleth.</p>
-<p class="last">The <tt class="docutils literal"><span class="pre">ShibRequireSession</span></tt> rule is invalid in Apache 2.4 or newer
+<p class="last">The <code class="docutils literal"><span class="pre">ShibRequireSession</span></code> rule is invalid in Apache 2.4 or newer
 and should be dropped in that specific setup.</p>
 </div>
 </li>
@@ -404,7 +404,7 @@ and should be dropped in that specific setup.</p>
 </pre></div>
 </div>
 </li>
-<li><p class="first">Enable the <tt class="docutils literal"><span class="pre">ssl</span></tt> and <tt class="docutils literal"><span class="pre">shib2</span></tt> modules:</p>
+<li><p class="first">Enable the <code class="docutils literal"><span class="pre">ssl</span></code> and <code class="docutils literal"><span class="pre">shib2</span></code> modules:</p>
 <div class="code console highlight-python"><div class="highlight"><pre><span class="c"># a2enmod ssl</span>
 <span class="c"># a2enmod shib2</span>
 </pre></div>
@@ -416,7 +416,7 @@ and should be dropped in that specific setup.</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The <tt class="docutils literal"><span class="pre">service</span> <span class="pre">apache2</span> <span class="pre">restart</span></tt> command is Ubuntu-specific. For
+<p class="last">The <code class="docutils literal"><span class="pre">service</span> <span class="pre">apache2</span> <span class="pre">restart</span></code> command is Ubuntu-specific. For
 other distributions, replace with appropriate command.</p>
 </div>
 </li>
@@ -432,22 +432,22 @@ executing:</p>
 </pre></div>
 </div>
 <p>The newly created file will be stored under
-<tt class="file docutils literal"><span class="pre">/etc/shibboleth/sp-key.pem</span></tt></p>
+<code class="file docutils literal"><span class="pre">/etc/shibboleth/sp-key.pem</span></code></p>
 </li>
 <li><p class="first">Upload your Service Provider’s metadata file to your Identity Provider.</p>
 </li>
 <li><p class="first">Configure your Service Provider by editing
-<tt class="file docutils literal"><span class="pre">/etc/shibboleth/shibboleth2.xml</span></tt>.</p>
+<code class="file docutils literal"><span class="pre">/etc/shibboleth/shibboleth2.xml</span></code>.</p>
 <p>For more information, see <a class="reference external" href="https://wiki.shibboleth.net/confluence/display/SHIB2/Configuration">Shibboleth Service Provider Configuration</a>.</p>
 </li>
-<li><p class="first">Identity service enforces <tt class="docutils literal"><span class="pre">external</span></tt> authentication when environment
-variable <tt class="docutils literal"><span class="pre">REMOTE_USER</span></tt> is present so make sure Shibboleth does not set
-the <tt class="docutils literal"><span class="pre">REMOTE_USER</span></tt> environment variable. To do so, scan through the
-<tt class="file docutils literal"><span class="pre">/etc/shibboleth/shibboleth2.xml</span></tt> configuration file and remove
-the <tt class="docutils literal"><span class="pre">REMOTE_USER</span></tt> directives.</p>
+<li><p class="first">Identity service enforces <code class="docutils literal"><span class="pre">external</span></code> authentication when environment
+variable <code class="docutils literal"><span class="pre">REMOTE_USER</span></code> is present so make sure Shibboleth does not set
+the <code class="docutils literal"><span class="pre">REMOTE_USER</span></code> environment variable. To do so, scan through the
+<code class="file docutils literal"><span class="pre">/etc/shibboleth/shibboleth2.xml</span></code> configuration file and remove
+the <code class="docutils literal"><span class="pre">REMOTE_USER</span></code> directives.</p>
 </li>
 <li><p class="first">Examine your attributes map in the
-<tt class="file docutils literal"><span class="pre">/etc/shibboleth/attributes-map.xml</span></tt> file and adjust your
+<code class="file docutils literal"><span class="pre">/etc/shibboleth/attributes-map.xml</span></code> file and adjust your
 requirements if needed. For more information see <a class="reference external" href="https://wiki.shibboleth.net/confluence/display/SHIB2/NativeSPAddAttribute">Shibboleth Attributes</a>.</p>
 </li>
 <li><p class="first">Restart the Shibboleth daemon:</p>
@@ -458,17 +458,17 @@ requirements if needed. For more information see <a class="reference external" h
 </li>
 </ol>
 </li>
-<li><p class="first">Enable <tt class="docutils literal"><span class="pre">OS-FEDERATION</span></tt> extension:</p>
+<li><p class="first">Enable <code class="docutils literal"><span class="pre">OS-FEDERATION</span></code> extension:</p>
 <ol class="arabic">
-<li><p class="first">Add the Federation extension driver to the <tt class="docutils literal"><span class="pre">[federation]</span></tt> section in
-the <tt class="file docutils literal"><span class="pre">keystone.conf</span></tt> file. For example:</p>
+<li><p class="first">Add the Federation extension driver to the <code class="docutils literal"><span class="pre">[federation]</span></code> section in
+the <code class="file docutils literal"><span class="pre">keystone.conf</span></code> file. For example:</p>
 <div class="code ini highlight-python"><div class="highlight"><pre><span class="p">[</span><span class="n">federation</span><span class="p">]</span>
 <span class="n">driver</span> <span class="o">=</span> <span class="n">keystone</span><span class="o">.</span><span class="n">contrib</span><span class="o">.</span><span class="n">federation</span><span class="o">.</span><span class="n">backends</span><span class="o">.</span><span class="n">sql</span><span class="o">.</span><span class="n">Federation</span>
 </pre></div>
 </div>
 </li>
-<li><p class="first">Add the saml2 authentication method to the <tt class="docutils literal"><span class="pre">[auth]</span></tt> section in
-<tt class="file docutils literal"><span class="pre">keystone.conf</span></tt> file:</p>
+<li><p class="first">Add the saml2 authentication method to the <code class="docutils literal"><span class="pre">[auth]</span></code> section in
+<code class="file docutils literal"><span class="pre">keystone.conf</span></code> file:</p>
 <div class="code ini highlight-python"><div class="highlight"><pre><span class="p">[</span><span class="n">auth</span><span class="p">]</span>
 <span class="n">methods</span> <span class="o">=</span> <span class="n">external</span><span class="p">,</span><span class="n">password</span><span class="p">,</span><span class="n">token</span><span class="p">,</span><span class="n">saml2</span>
 <span class="n">saml2</span> <span class="o">=</span> <span class="n">keystone</span><span class="o">.</span><span class="n">auth</span><span class="o">.</span><span class="n">plugins</span><span class="o">.</span><span class="n">saml2</span><span class="o">.</span><span class="n">Saml2</span>
@@ -476,13 +476,13 @@ the <tt class="file docutils literal"><span class="pre">keystone.conf</span></tt
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The <tt class="docutils literal"><span class="pre">external</span></tt> method should be dropped to avoid any interference
-with some Apache and Shibboleth SP setups, where a <tt class="docutils literal"><span class="pre">REMOTE_USER</span></tt>
+<p class="last">The <code class="docutils literal"><span class="pre">external</span></code> method should be dropped to avoid any interference
+with some Apache and Shibboleth SP setups, where a <code class="docutils literal"><span class="pre">REMOTE_USER</span></code>
 environment variable is always set, even as an empty value.</p>
 </div>
 </li>
-<li><p class="first">Add the <tt class="docutils literal"><span class="pre">federation_extension</span></tt> middleware to the <tt class="docutils literal"><span class="pre">api_v3</span></tt> pipeline
-in the <tt class="file docutils literal"><span class="pre">keystone-paste.ini</span></tt> file. For example:</p>
+<li><p class="first">Add the <code class="docutils literal"><span class="pre">federation_extension</span></code> middleware to the <code class="docutils literal"><span class="pre">api_v3</span></code> pipeline
+in the <code class="file docutils literal"><span class="pre">keystone-paste.ini</span></code> file. For example:</p>
 <div class="code ini highlight-python"><div class="highlight"><pre>[pipeline:api_v3]
 pipeline = access_log sizelimit url_normalize token_auth
 admin_token_auth xml_body json_body ec2_extension s3_extension
@@ -508,7 +508,7 @@ indicates the communication.</p>
 <div class="section" id="configuring-federation">
 <h2>Configuring Federation<a class="headerlink" href="#configuring-federation" title="Permalink to this headline">¶</a></h2>
 <p>Now that the Identity Provider and Identity service are communicating,
-you can start to configure the <tt class="docutils literal"><span class="pre">OS-FEDERATION</span></tt> extension.</p>
+you can start to configure the <code class="docutils literal"><span class="pre">OS-FEDERATION</span></code> extension.</p>
 <ol class="arabic">
 <li><p class="first">Create Identity groups and assign roles.</p>
 <p>No new users will be added to the Identity back end, but the Identity
@@ -519,8 +519,8 @@ Identity service groups objects, and hence to local role assignments.</p>
 that correspond to the Identity Provider’s groups; additionally, these
 groups should be assigned roles on one or more projects or domains. For
 example, groups here refers to the Identity service groups that should
-be created so that when mapping from the SAML attribute <tt class="docutils literal"><span class="pre">Employees</span></tt>,
-you can map it to a Identity service group <tt class="docutils literal"><span class="pre">devs</span></tt>.</p>
+be created so that when mapping from the SAML attribute <code class="docutils literal"><span class="pre">Employees</span></code>,
+you can map it to a Identity service group <code class="docutils literal"><span class="pre">devs</span></code>.</p>
 <p>The Identity service administrator can create as many groups as there
 are SAML attributes, whatever the mapping calls for.</p>
 </li>
@@ -537,7 +537,7 @@ service.</p>
 <p>To start Federated authentication a user must access the dedicated URL
 with Identity Provider’s and Protocol’s identifiers stored within a
 protected URL. The URL has a format of:
-<tt class="docutils literal"><span class="pre">/v3/OS-FEDERATION/identity_providers/{identity_provider}/protocols/{protocol}/auth</span></tt>.</p>
+<code class="docutils literal"><span class="pre">/v3/OS-FEDERATION/identity_providers/{identity_provider}/protocols/{protocol}/auth</span></code>.</p>
 <p>This instance follows a standard SAML2 authentication procedure, that
 is, the user will be redirected to the Identity Provider’s
 authentication webpage and be prompted for credentials. After
@@ -545,11 +545,11 @@ successfully authenticating the user will be redirected to the Service
 Provider’s endpoint. If using a web browser, a token will be returned in
 XML format. As an alternative to using a web browser, you can use
 Enhanced Client or Proxy (ECP), which is available in the
-<tt class="docutils literal"><span class="pre">keystoneclient</span></tt> in the Identity service API.</p>
+<code class="docutils literal"><span class="pre">keystoneclient</span></code> in the Identity service API.</p>
 <p>In the returned unscoped token, a list of Identity service groups the
 user belongs to will be included.</p>
 <p>For example, the following URL would be considered protected by
-<tt class="docutils literal"><span class="pre">mod_shib</span></tt> and Apache, as such a request made to the URL would be
+<code class="docutils literal"><span class="pre">mod_shib</span></code> and Apache, as such a request made to the URL would be
 redirected to the Identity Provider, to start the SAML authentication
 procedure.</p>
 <div class="code console highlight-python"><div class="highlight"><pre># curl -X GET \
@@ -558,8 +558,8 @@ procedure.</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">It is assumed that the <tt class="docutils literal"><span class="pre">keystone</span></tt> service is running on port
-<tt class="docutils literal"><span class="pre">5000</span></tt>.</p>
+<p class="last">It is assumed that the <code class="docutils literal"><span class="pre">keystone</span></code> service is running on port
+<code class="docutils literal"><span class="pre">5000</span></code>.</p>
 </div>
 </li>
 <li><p class="first">Determine accessible resources.</p>
@@ -567,9 +567,9 @@ procedure.</p>
 the list projects and domains that are accessible.</p>
 <ul class="simple">
 <li>List projects a federated user can access:
-<tt class="docutils literal"><span class="pre">GET</span> <span class="pre">/OS-FEDERATION/projects</span></tt></li>
+<code class="docutils literal"><span class="pre">GET</span> <span class="pre">/OS-FEDERATION/projects</span></code></li>
 <li>List domains a federated user can access:
-<tt class="docutils literal"><span class="pre">GET</span> <span class="pre">/OS-FEDERATION/domains</span></tt></li>
+<code class="docutils literal"><span class="pre">GET</span> <span class="pre">/OS-FEDERATION/domains</span></code></li>
 </ul>
 <p>For example,</p>
 <div class="code console highlight-python"><div class="highlight"><pre># curl -X GET \
@@ -604,9 +604,9 @@ is sufficient to uniquely identify a project or domain. For example,</p>
 <div class="section" id="configuration-options">
 <h3>Configuration options<a class="headerlink" href="#configuration-options" title="Permalink to this headline">¶</a></h3>
 <p>Before attempting to federate multiple Identity service deployments, you
-must setup certain configuration options in the <tt class="file docutils literal"><span class="pre">keystone.conf</span></tt>
+must setup certain configuration options in the <code class="file docutils literal"><span class="pre">keystone.conf</span></code>
 file.</p>
-<p>Within the <tt class="file docutils literal"><span class="pre">keystone.conf</span></tt> assign values to the <tt class="docutils literal"><span class="pre">[saml]</span></tt> related
+<p>Within the <code class="file docutils literal"><span class="pre">keystone.conf</span></code> assign values to the <code class="docutils literal"><span class="pre">[saml]</span></code> related
 fields, for example:</p>
 <div class="code ini highlight-python"><div class="highlight"><pre>[saml]
 certfile=/etc/keystone/ssl/certs/ca.pem
@@ -616,14 +616,14 @@ idp_sso_endpoint=https://keystone.example.com/v3/OS-FEDERATION/saml2/sso
 idp_metadata_path=/etc/keystone/saml2_idp_metadata.xml
 </pre></div>
 </div>
-<p>It is recommended that the following <tt class="docutils literal"><span class="pre">Organization</span></tt> configuration
+<p>It is recommended that the following <code class="docutils literal"><span class="pre">Organization</span></code> configuration
 options be setup.</p>
 <div class="code ini highlight-python"><div class="highlight"><pre>idp_organization_name=example_company
 idp_organization_display_name=Example Corp.
 idp_organization_url=example.com
 </pre></div>
 </div>
-<p>It is also recommended the following <tt class="docutils literal"><span class="pre">Contact</span></tt> options are set.</p>
+<p>It is also recommended the following <code class="docutils literal"><span class="pre">Contact</span></code> options are set.</p>
 <div class="code ini highlight-python"><div class="highlight"><pre>idp_contact_company=example_company
 idp_contact_name=John
 idp_contact_surname=Smith
@@ -637,7 +637,7 @@ idp_contact_type=technical
 <h3>Generate metadata<a class="headerlink" href="#generate-metadata" title="Permalink to this headline">¶</a></h3>
 <p>In order to create a trust between the Identity Provider and the Service
 Provider, metadata must be exchanged. To create metadata for your
-Identity service, run the <tt class="docutils literal"><span class="pre">keystone-manage</span></tt> command and pipe the
+Identity service, run the <code class="docutils literal"><span class="pre">keystone-manage</span></code> command and pipe the
 output to a file. For example:</p>
 <div class="code console highlight-python"><div class="highlight"><pre>$ keystone-manage saml_idp_metadata &gt; /etc/keystone/saml2_idp_metadata.xml
 </pre></div>
@@ -645,14 +645,14 @@ output to a file. For example:</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The file location should match the value of the configuration option
-<tt class="docutils literal"><span class="pre">idp_metadata_path</span></tt> that was assigned in the list of <tt class="docutils literal"><span class="pre">[saml]</span></tt>
+<code class="docutils literal"><span class="pre">idp_metadata_path</span></code> that was assigned in the list of <code class="docutils literal"><span class="pre">[saml]</span></code>
 updates.</p>
 </div>
 </div>
 <div class="section" id="create-a-region-for-the-service-provider">
 <h3>Create a region for the Service Provider<a class="headerlink" href="#create-a-region-for-the-service-provider" title="Permalink to this headline">¶</a></h3>
 <p>Create a new region for the service provider, for example, create a new
-region with an <tt class="docutils literal"><span class="pre">ID</span></tt> of BETA, and <tt class="docutils literal"><span class="pre">URL</span></tt> of
+region with an <code class="docutils literal"><span class="pre">ID</span></code> of BETA, and <code class="docutils literal"><span class="pre">URL</span></code> of
 <a class="reference external" href="https://beta.com/Shibboleth.sso/SAML2/POST">https://beta.com/Shibboleth.sso/SAML2/POST</a>. This URL will be used when
 creating a SAML assertion for BETA, and signed by the current keystone
 Identity Provider.</p>
@@ -683,8 +683,8 @@ keystone, will be returned.</p>
 <div class="section" id="future">
 <h2>Future<a class="headerlink" href="#future" title="Permalink to this headline">¶</a></h2>
 <p>Currently, the CLI supports the Enhanced Client or Proxy (ECP), (the
-non-browser) support for <tt class="docutils literal"><span class="pre">keystoneclient</span></tt> from an API perspective. So,
-if you are using the <tt class="docutils literal"><span class="pre">keystoneclient</span></tt>, you can create a client
+non-browser) support for <code class="docutils literal"><span class="pre">keystoneclient</span></code> from an API perspective. So,
+if you are using the <code class="docutils literal"><span class="pre">keystoneclient</span></code>, you can create a client
 instance and use the SAML authorization plugin. There is no support for
 dashboard available presently. With the upcoming OpenStack releases,
 Federated Identity should be supported with both CLI and the dashboard.</p>
@@ -705,7 +705,7 @@ Federated Identity should be supported with both CLI and the dashboard.</p>
             <a id="logABugLink3" href="" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
           </div>
           <div class="row docs-byline bottom">
-            <div class="docs-updated">updated: 2015-10-23 11:30</div>
+            <div class="docs-updated">updated: 2015-11-02 16:03</div>
           </div>
           <div class="row">
             <div class="col-lg-8 col-md-8 col-sm-8 docs-license">
@@ -901,14 +901,14 @@ Federated Identity should be supported with both CLI and the dashboard.</p>
         gitURL = "Source: http://git.openstack.org/cgit/openstack/security-doc/tree/security-guide/source" + "/" + sourceFile;
 
     /* gitsha, project and bug_tag rely on variables in conf.py */
-    var gitSha = "SHA: e97f05a7fc0b64ba33d71c713680a34d9f2f5db5";
+    var gitSha = "SHA: ab0fb919437a4069435c9d95fa550f84fcecf8dd";
     var bugTitle = "Federated keystone in Security Guide";
     var fieldTags = "sec-guide";
 
     /* "last_updated" is the build date and time. It relies on the
        conf.py variable "html_last_updated_fmt", which should include
        year/month/day as well as hours and minutes                   */
-    var buildstring = "Release: 0.0.1 on 2015-10-23 11:30";
+    var buildstring = "Release: 0.0.1 on 2015-11-02 16:03";
 
     var fieldComment = encodeURI(buildstring) +
                        lineFeed + encodeURI(gitSha) +

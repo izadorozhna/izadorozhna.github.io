@@ -149,7 +149,7 @@
   </div>
 </div>
           <div class="row docs-byline">
-            <div class="docs-updated">updated: 2015-10-23 11:30</div>
+            <div class="docs-updated">updated: 2015-11-02 16:03</div>
           </div>
           <div class="row">
             <div class="col-lg-12">
@@ -210,20 +210,20 @@ and newer processors could potentially handle more nodes. For a
 given cloud, an architect needs to understand the application
 requirements to ensure that sufficient entropy is available.</p>
 <p>The Virtio RNG is a random number generator that uses
-<tt class="file docutils literal"><span class="pre">/dev/random</span></tt> as the source of entropy by default, however can be
+<code class="file docutils literal"><span class="pre">/dev/random</span></code> as the source of entropy by default, however can be
 configured to use a hardware RNG or a tool such as the entropy
 gathering daemon (<a class="reference external" href="http://egd.sourceforge.net">EGD</a>) to provide
 a way to fairly and securely distribute entropy through a
-distributed system. The Virtio RNG is enabled using the <tt class="docutils literal"><span class="pre">hw_rng</span></tt>
+distributed system. The Virtio RNG is enabled using the <code class="docutils literal"><span class="pre">hw_rng</span></code>
 property of the metadata used to create the instance.</p>
 </div>
 <div class="section" id="scheduling-instances-to-nodes">
 <h2>Scheduling instances to nodes<a class="headerlink" href="#scheduling-instances-to-nodes" title="Permalink to this headline">¶</a></h2>
 <p>Before an instance is created, a host for the image
 instantiation must be selected. This selection is performed by
-the <tt class="docutils literal"><span class="pre">nova-scheduler</span></tt> which determines how to dispatch compute
+the <code class="docutils literal"><span class="pre">nova-scheduler</span></code> which determines how to dispatch compute
 and volume requests.</p>
-<p>The <tt class="docutils literal"><span class="pre">FilterScheduler</span></tt> is the default scheduler for OpenStack
+<p>The <code class="docutils literal"><span class="pre">FilterScheduler</span></code> is the default scheduler for OpenStack
 Compute, although other schedulers exist (see the section
 <a class="reference external" href="http://docs.openstack.org/liberty/config-reference/content/section_compute-scheduler.html">Scheduling</a>
 in the
@@ -254,16 +254,16 @@ same host as another instance.</dd>
 administrator provided criteria such as trusts or metadata parsing.</dd>
 </dl>
 <p>Multiple filters can be applied at once, such as the
-<tt class="docutils literal"><span class="pre">ServerGroupAffinity</span></tt> filter to ensure an instance is created on a
-member of a specific set of hosts and <tt class="docutils literal"><span class="pre">ServerGroupAntiAffinity</span></tt>
+<code class="docutils literal"><span class="pre">ServerGroupAffinity</span></code> filter to ensure an instance is created on a
+member of a specific set of hosts and <code class="docutils literal"><span class="pre">ServerGroupAntiAffinity</span></code>
 filter to ensure that same instance is not created on another specific
 set of hosts. These filters should be analyzed carefully to ensure
 they do not conflict with each other and result in rules that prevent
 the creation of instances.</p>
 <img alt="../_images/filteringWorkflow1.png" src="../_images/filteringWorkflow1.png" />
-<p>The <tt class="docutils literal"><span class="pre">GroupAffinity</span></tt> and <tt class="docutils literal"><span class="pre">GroupAntiAffinity</span></tt> filters conflict and
+<p>The <code class="docutils literal"><span class="pre">GroupAffinity</span></code> and <code class="docutils literal"><span class="pre">GroupAntiAffinity</span></code> filters conflict and
 should not both be enabled at the same time.</p>
-<p>The <tt class="docutils literal"><span class="pre">DiskFilter</span></tt> filter is capable of oversubscribing disk space.
+<p>The <code class="docutils literal"><span class="pre">DiskFilter</span></code> filter is capable of oversubscribing disk space.
 While not normally an issue, this can be a concern on storage devices
 that are thinly provisioned, and this filter should be used with
 well-tested quotas applied.</p>
@@ -429,7 +429,7 @@ with live migrations, the following list details some of these:</p>
 <h3>Disable live migration<a class="headerlink" href="#disable-live-migration" title="Permalink to this headline">¶</a></h3>
 <p>At this time, live migration is enabled in OpenStack
 by default. Live migrations can be disabled by adding the
-following lines to the nova <tt class="file docutils literal"><span class="pre">policy.json</span></tt> file:</p>
+following lines to the nova <code class="file docutils literal"><span class="pre">policy.json</span></code> file:</p>
 <div class="code json highlight-python"><div class="highlight"><pre>&quot;compute_extension:admin_actions:migrate&quot;: &quot;!&quot;,
 &quot;compute_extension:admin_actions:migrateLive&quot;: &quot;!&quot;,
 </pre></div>
@@ -558,7 +558,7 @@ in this guide for more detail.</p>
             <a id="logABugLink3" href="" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
           </div>
           <div class="row docs-byline bottom">
-            <div class="docs-updated">updated: 2015-10-23 11:30</div>
+            <div class="docs-updated">updated: 2015-11-02 16:03</div>
           </div>
           <div class="row">
             <div class="col-lg-8 col-md-8 col-sm-8 docs-license">
@@ -747,14 +747,14 @@ in this guide for more detail.</p>
         gitURL = "Source: http://git.openstack.org/cgit/openstack/security-doc/tree/security-guide/source" + "/" + sourceFile;
 
     /* gitsha, project and bug_tag rely on variables in conf.py */
-    var gitSha = "SHA: e97f05a7fc0b64ba33d71c713680a34d9f2f5db5";
+    var gitSha = "SHA: ab0fb919437a4069435c9d95fa550f84fcecf8dd";
     var bugTitle = "Security services for instances in Security Guide";
     var fieldTags = "sec-guide";
 
     /* "last_updated" is the build date and time. It relies on the
        conf.py variable "html_last_updated_fmt", which should include
        year/month/day as well as hours and minutes                   */
-    var buildstring = "Release: 0.0.1 on 2015-10-23 11:30";
+    var buildstring = "Release: 0.0.1 on 2015-11-02 16:03";
 
     var fieldComment = encodeURI(buildstring) +
                        lineFeed + encodeURI(gitSha) +

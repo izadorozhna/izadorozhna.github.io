@@ -149,7 +149,7 @@
   </div>
 </div>
           <div class="row docs-byline">
-            <div class="docs-updated">updated: 2015-10-23 11:30</div>
+            <div class="docs-updated">updated: 2015-11-02 16:03</div>
           </div>
           <div class="row">
             <div class="col-lg-12">
@@ -171,8 +171,8 @@
   <div class="section" id="hardening-compute-deployments">
 <h1>Hardening Compute deployments<a class="headerlink" href="#hardening-compute-deployments" title="Permalink to this headline">¶</a></h1>
 <p>One of the main security concerns with any OpenStack deployment is the security
-and controls around sensitive files, such as the <tt class="file docutils literal"><span class="pre">nova.conf</span></tt> file.
-Normally contained in the <tt class="file docutils literal"><span class="pre">/etc</span></tt> directory, this configuration file
+and controls around sensitive files, such as the <code class="file docutils literal"><span class="pre">nova.conf</span></code> file.
+Normally contained in the <code class="file docutils literal"><span class="pre">/etc</span></code> directory, this configuration file
 contains many sensitive options including configuration details and service
 passwords. All such sensitive files should be given strict file level
 permissions, and monitored for changes through file integrity monitoring (FIM)
@@ -181,17 +181,17 @@ target file in a known good state, and then periodically take a new hash of the
 file and compare it to the known good hash. An alert can be created if it was
 found to have been modified unexpectedly.</p>
 <p>The permissions of a file can be examined my moving into the directory the file
-is contained in and running the <tt class="docutils literal"><span class="pre">ls</span> <span class="pre">-lh</span></tt> command. This will show the
+is contained in and running the <code class="docutils literal"><span class="pre">ls</span> <span class="pre">-lh</span></code> command. This will show the
 permissions, owner, and group that have access to the file, as well as other
 information such as the last time the file was modified and when it was
 created.</p>
-<p>The <tt class="file docutils literal"><span class="pre">/var/lib/nova</span></tt> directory is used to hold details about the instances
+<p>The <code class="file docutils literal"><span class="pre">/var/lib/nova</span></code> directory is used to hold details about the instances
 on a given Compute host. This directory should be considered sensitive as well,
 with strictly enforced file permissions. Additionally, it should be backed up
 regularly as it contains information and metadata for the instances associated
 with that host.</p>
 <p>If your deployment does not require full virtual machine backups, we recommend
-excluding the <tt class="file docutils literal"><span class="pre">/var/lib/nova/instances</span></tt> directory as it will be as large
+excluding the <code class="file docutils literal"><span class="pre">/var/lib/nova/instances</span></code> directory as it will be as large
 as the combined space of each vm running on that node. If your deployment does
 require full vm backups, you will need to ensure this directory is backed up
 successfully.</p>
@@ -267,7 +267,7 @@ below:</p>
             <a id="logABugLink3" href="" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
           </div>
           <div class="row docs-byline bottom">
-            <div class="docs-updated">updated: 2015-10-23 11:30</div>
+            <div class="docs-updated">updated: 2015-11-02 16:03</div>
           </div>
           <div class="row">
             <div class="col-lg-8 col-md-8 col-sm-8 docs-license">
@@ -461,14 +461,14 @@ below:</p>
         gitURL = "Source: http://git.openstack.org/cgit/openstack/security-doc/tree/security-guide/source" + "/" + sourceFile;
 
     /* gitsha, project and bug_tag rely on variables in conf.py */
-    var gitSha = "SHA: e97f05a7fc0b64ba33d71c713680a34d9f2f5db5";
+    var gitSha = "SHA: ab0fb919437a4069435c9d95fa550f84fcecf8dd";
     var bugTitle = "Hardening Compute deployments in Security Guide";
     var fieldTags = "sec-guide";
 
     /* "last_updated" is the build date and time. It relies on the
        conf.py variable "html_last_updated_fmt", which should include
        year/month/day as well as hours and minutes                   */
-    var buildstring = "Release: 0.0.1 on 2015-10-23 11:30";
+    var buildstring = "Release: 0.0.1 on 2015-11-02 16:03";
 
     var fieldComment = encodeURI(buildstring) +
                        lineFeed + encodeURI(gitSha) +
