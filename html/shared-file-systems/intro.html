@@ -149,7 +149,7 @@
   </div>
 </div>
           <div class="row docs-byline">
-            <div class="docs-updated">updated: 2015-11-02 16:03</div>
+            <div class="docs-updated">updated: 2015-11-04 15:39</div>
           </div>
           <div class="row">
             <div class="col-lg-12">
@@ -193,10 +193,6 @@ authenticates and routes requests throughout the Shared Filesystem
 service. There is python-manilaclient to interact with the API.
 For more details on the Shared File Systems API, see the <a class="reference external" href="http://developer.openstack.org/api-ref-share-v2.html">OpenStack
 Shared File Systems API</a>.</dd>
-<dt>python-manilaclient</dt>
-<dd>Command line interface to interact with the Shared File Systems service
-via <code class="docutils literal"><span class="pre">manila-api</span></code> and also a Python module to interact
-programmatically with the Shared File Systems service.</dd>
 <dt><code class="docutils literal"><span class="pre">manila-share</span></code></dt>
 <dd>Responsible for managing Shared File Service devices, specifically the
 back-end devices.</dd>
@@ -204,6 +200,10 @@ back-end devices.</dd>
 <dd>Responsible for scheduling and routing requests to the appropriate
 <code class="docutils literal"><span class="pre">manila-share</span></code> service. It does that by picking one back-end while
 filtering all except one back-end.</dd>
+<dt>python-manilaclient</dt>
+<dd>Command line interface to interact with the Shared File Systems service
+via <code class="docutils literal"><span class="pre">manila-api</span></code> and also a Python module to interact programmatically
+with the Shared File Systems service.</dd>
 <dt>Storage controller</dt>
 <dd>Typically a metal box with spinning disks, ethernet ports, and some
 kind of software that allows network clients to read and write files on
@@ -349,7 +349,7 @@ The path <code class="docutils literal"><span class="pre">/etc/manila/manila.con
             <a id="logABugLink3" href="" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
           </div>
           <div class="row docs-byline bottom">
-            <div class="docs-updated">updated: 2015-11-02 16:03</div>
+            <div class="docs-updated">updated: 2015-11-04 15:39</div>
           </div>
           <div class="row">
             <div class="col-lg-8 col-md-8 col-sm-8 docs-license">
@@ -543,14 +543,14 @@ The path <code class="docutils literal"><span class="pre">/etc/manila/manila.con
         gitURL = "Source: http://git.openstack.org/cgit/openstack/security-doc/tree/security-guide/source" + "/" + sourceFile;
 
     /* gitsha, project and bug_tag rely on variables in conf.py */
-    var gitSha = "SHA: ab0fb919437a4069435c9d95fa550f84fcecf8dd";
+    var gitSha = "SHA: 83afb4bf7cea845d6848732e6acecaab4e210d69";
     var bugTitle = "Introduction in Security Guide";
     var fieldTags = "sec-guide";
 
     /* "last_updated" is the build date and time. It relies on the
        conf.py variable "html_last_updated_fmt", which should include
        year/month/day as well as hours and minutes                   */
-    var buildstring = "Release: 0.0.1 on 2015-11-02 16:03";
+    var buildstring = "Release: 0.0.1 on 2015-11-04 15:39";
 
     var fieldComment = encodeURI(buildstring) +
                        lineFeed + encodeURI(gitSha) +
